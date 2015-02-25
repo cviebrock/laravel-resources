@@ -31,4 +31,8 @@ return [
 	 */
 	'defaultLocale' => null,
 
+	'classes' => [
+//		'home' => 'MyApp\Resources\HomeResourceDefinition',
+	]
+
 ];
