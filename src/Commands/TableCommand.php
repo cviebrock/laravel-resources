@@ -22,7 +22,8 @@ class TableCommand extends BaseCommand {
 	 * @var array
 	 */
 	protected $stubs = [
-		'create_resources_table'
+		'create_resources_table',
+		'create_resource_translations_table'
 	];
 
 
@@ -30,11 +31,13 @@ class TableCommand extends BaseCommand {
 	 * Run the command.
 	 */
 	public function fire() {
+		$this->info('Creating package migrations ...');
 		foreach ($this->stubs as $stub) {
 			$fullPath = $this->createMigration($stub);
 			file_put_contents($fullPath, $this->getMigrationStub($stub));
+			$this->comment('Created migration: ' . basename($fullPath));
 		}
-		$this->info('Migration created successfully!');
+		$this->info('Migrations created successfully!');
 		$this->call('dump-autoload');
 	}
 

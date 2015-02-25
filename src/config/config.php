@@ -12,6 +12,9 @@ return [
 	 *
 	 * If those conflict with tables already in your application,
 	 * then just supply a prefix here to avoid conflict.
+	 *
+	 * Note: This is in addition to any database-wide prefix defined
+	 * in /app/config/database.php
 	 */
 	'tablePrefix' => '',
 

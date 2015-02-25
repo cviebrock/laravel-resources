@@ -1,10 +1,9 @@
 <?php namespace Cviebrock\LaravelResources\Commands;
 
-use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
 
-class ImportCommand extends Command {
+class ImportCommand extends BaseCommand {
 
 	/**
 	 * Command name.

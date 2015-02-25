@@ -1,5 +1,7 @@
 <?php namespace Cviebrock\LaravelResources;
 
+use Cviebrock\LaravelResources\Commands\ImportCommand;
+use Cviebrock\LaravelResources\Commands\TableCommand;
 use Illuminate\Support\ServiceProvider as BaseProvider;
 
 
@@ -25,7 +27,7 @@ class ServiceProvider extends BaseProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->package('cviebrock/laravel-resources', null, __DIR__);
+		$this->package('cviebrock/laravel-resources', 'resources', __DIR__);
 	}
 
 
@@ -35,7 +37,7 @@ class ServiceProvider extends BaseProvider {
 	 * @return void
 	 */
 	public function register() {
-		$this->registerResources();
+//		$this->registerResources();
 		$this->registerCommands();
 	}
 
@@ -58,7 +60,7 @@ class ServiceProvider extends BaseProvider {
 	private function registerCommands() {
 		$this->app['resources.commands.table'] = $this->app->share(function ($app) {
 			$command = new TableCommand();
-			$resources->setConfig($app['config']->get('resources::config'));
+			$command->setConfig($app['config']->get('resources::config'));
 
 			return $command;
 		});
@@ -67,7 +69,7 @@ class ServiceProvider extends BaseProvider {
 
 		$this->app['resources.commands.import'] = $this->app->share(function ($app) {
 			$command = new ImportCommand();
-			$resources->setConfig($app['config']->get('resources::config'));
+			$command->setConfig($app['config']->get('resources::config'));
 
 			return $command;
 		});
