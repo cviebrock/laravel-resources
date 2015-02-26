@@ -25,7 +25,7 @@ class ImportCommand extends BaseCommand {
 	 */
 	public function fire() {
 
-		$resources = $this->laravel['resources'];
+		$resources = $this->laravel['resources.manager'];
 
 		$force = $this->option('force');
 		$defaultResources = $this->laravel['config']->get('resources::defaults');

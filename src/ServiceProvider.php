@@ -45,7 +45,7 @@ class ServiceProvider extends BaseProvider {
 	private function registerManager() {
 		$this->app['resources.manager'] = $this->app->share(function ($app) {
 
-			return new ResourceManager(
+			return new Manager(
 				$app['cache'],
 				$app['db'],
 				$app['config']['resources::config']

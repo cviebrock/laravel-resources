@@ -1,6 +1,6 @@
 <?php namespace Cviebrock\LaravelResources\Contracts;
 
-interface ResourceDefinition {
+interface ResourceNamespace {
 
 	public function getNamespace();
 

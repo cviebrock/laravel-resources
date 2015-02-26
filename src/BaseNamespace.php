@@ -1,10 +1,10 @@
 <?php namespace Cviebrock\LaravelResources;
 
-use Cviebrock\LaravelResources\Contracts\ResourceDefinition;
+use Cviebrock\LaravelResources\Contracts\ResourceNamespace;
 use Cviebrock\LaravelResources\Exceptions\ResourceRecordNotDefinedException;
 
 
-abstract class BaseResourceDefinition implements ResourceDefinition {
+abstract class BaseNamespace implements ResourceNamespace {
 
 	protected $records = [];
 

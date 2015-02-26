@@ -6,7 +6,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\NamespacedItemResolver;
 
 
-class ResourceManager extends NamespacedItemResolver {
+class Manager extends NamespacedItemResolver {
 
 	protected $namespaces = [];
 

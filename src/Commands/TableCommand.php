@@ -14,7 +14,7 @@ class TableCommand extends BaseCommand {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Create migration for resources table.';
+	protected $description = 'Create migrations for resources tables.';
 
 	/**
 	 * The array of stub files from which to build migrations.
@@ -39,6 +39,7 @@ class TableCommand extends BaseCommand {
 		}
 		$this->info('Migrations created successfully!');
 		$this->call('dump-autoload');
+		$this->info('Don\'t forget to run "artisan migrate".');
 	}
 
 
