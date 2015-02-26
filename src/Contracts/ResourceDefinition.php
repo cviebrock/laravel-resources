@@ -6,4 +6,6 @@ interface ResourceDefinition {
 
 	public function getResources();
 
+	public function getRecord($group, $item);
+
 }

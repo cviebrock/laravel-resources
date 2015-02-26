@@ -37,44 +37,41 @@ class ServiceProvider extends BaseProvider {
 	 * @return void
 	 */
 	public function register() {
-//		$this->registerResources();
+		$this->registerManager();
 		$this->registerCommands();
 	}
 
 
-	private function registerResources() {
-		$this->app['resources'] = $this->app->share(function ($app) {
+	private function registerManager() {
+		$this->app['resources.manager'] = $this->app->share(function ($app) {
 
-			$resources = new Resources(
+			return new ResourceManager(
 				$app['cache'],
-				$app['db']
+				$app['db'],
+				$app['config']['resources::config']
 			);
-			$resources->setConfig($app['config']->get('resources::config'));
-			$resources->loadItems();
-
-			return $resources;
 		});
 	}
 
 
 	private function registerCommands() {
-		$this->app['resources.commands.table'] = $this->app->share(function ($app) {
+		$this->app['resources.command.table'] = $this->app->share(function ($app) {
 			$command = new TableCommand();
-			$command->setConfig($app['config']->get('resources::config'));
+			$command->setConfig($app['config']['resources::config']);
 
 			return $command;
 		});
 
-		$this->commands('resources.commands.table');
+		$this->commands('resources.command.table');
 
-		$this->app['resources.commands.import'] = $this->app->share(function ($app) {
+		$this->app['resources.command.import'] = $this->app->share(function ($app) {
 			$command = new ImportCommand();
-			$command->setConfig($app['config']->get('resources::config'));
+			$command->setConfig($app['config']['resources::config']);
 
 			return $command;
 		});
 
-		$this->commands('resources.commands.import');
+		$this->commands('resources.command.import');
 	}
 
 
@@ -85,9 +82,9 @@ class ServiceProvider extends BaseProvider {
 	 */
 	public function provides() {
 		return [
-			'resources',
-			'resources.commands.table',
-			'resources.commands.populate'
+			'resources.manager',
+			'resources.command.table',
+			'resources.command.populate'
 		];
 	}
 }
