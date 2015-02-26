@@ -16,9 +16,8 @@ class CreateResourcesTable extends Migration {
 			$table->increments('resource_id');
 			$table->string('namespace');
 			$table->string('key');
-			$table->string('description')->default('');
-			$table->text('value')->nullable()->default(null);
 			$table->timestamps();
+			$table->softDeletes();
 
 			$table->index('namespace');
 			$table->index('key');

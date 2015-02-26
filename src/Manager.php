@@ -40,15 +40,30 @@ class Manager extends NamespacedItemResolver {
 		dd($record);
 	}
 
-	protected function loadNamespace($namespace) {
+	protected function loadNamespace($namespace, $class = null) {
 
 		if (!isset($this->namespaces[$namespace])) {
-			if ($class = array_get($this->config, 'namespaces.' . $namespace)) {
-				$this->namespaces[$namespace] = new $class;
-			} else {
+			$class = $class ?: array_get($this->config, 'namespaces.' . $namespace);
+			if (!$class) {
 				throw new NamespaceNotDefinedException('Resource namespace not defined: ' . $namespace);
 			}
+
+			$this->namespaces[$namespace] = new $class;
 		}
+
 		return $this->namespaces[$namespace];
+	}
+
+	public function loadAll() {
+
+		$all = [];
+		$namespaces = array_get($this->config, 'namespaces', []);
+
+		foreach ($namespaces as $namespace => $class) {
+			$resources = $this->loadNamespace($namespace, $class)->loadResources();
+			$all = array_merge($all, array_dot($resources, $namespace.'::'));
+		}
+
+		return $all;
 	}
 }

@@ -27,25 +27,29 @@ class ImportCommand extends BaseCommand {
 
 		$resources = $this->laravel['resources.manager'];
 
-		$force = $this->option('force');
-		$defaultResources = $this->laravel['config']->get('resources::defaults');
-		$existingResources = $settings->all();
+		$resources->loadAll();
 
-		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
+		dd('foo');
 
-		foreach ($defaultResources as $key => $data) {
-
-			if (array_key_exists($key, $existingResources) && !$force) {
-				$this->comment('Skipping existing key "' . $key . '"');
-			} else {
-				$resources->set($key, $data['value'], $data['description']);
-				$this->comment('Set key "' . $key . '" => "' . $data['value'] . '"');
-			}
-		}
-
-		$resources->forceReload();
-
-		$this->info('Resources successfully populated!');
+//		$force = $this->option('force');
+//		$defaultResources = $this->laravel['config']->get('resources::defaults');
+//		$existingResources = $settings->all();
+//
+//		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
+//
+//		foreach ($defaultResources as $key => $data) {
+//
+//			if (array_key_exists($key, $existingResources) && !$force) {
+//				$this->comment('Skipping existing key "' . $key . '"');
+//			} else {
+//				$resources->set($key, $data['value'], $data['description']);
+//				$this->comment('Set key "' . $key . '" => "' . $data['value'] . '"');
+//			}
+//		}
+//
+//		$resources->forceReload();
+//
+//		$this->info('Resources successfully populated!');
 	}
 
 

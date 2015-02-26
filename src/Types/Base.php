@@ -1,6 +1,9 @@
 <?php namespace Cviebrock\LaravelResources\Types;
 
-abstract class Base {
+use Cviebrock\LaravelResources\Contracts\ResourceType;
+
+
+abstract class Base implements ResourceType {
 
 	/**
 	 * Get a descriptive name for this resource.

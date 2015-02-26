@@ -16,9 +16,9 @@ class CreateResourceTranslationsTable extends Migration {
 			$table->increments('resource_translation_id');
 			$table->unsignedInteger('resource_id');
 			$table->string('locale', 10);
-			$table->string('description')->default('');
-			$table->text('value')->default('');
+			$table->text('value')->nullable()->default(null);
 			$table->timestamps();
+			$table->softDeletes();
 
 			$table->index('resource_id');
 			$table->index('locale');
