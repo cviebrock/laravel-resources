@@ -6,14 +6,20 @@ use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
 abstract class Descriptor implements ResourceDescriptor {
 
 	/**
-	 * Get the key for this resource.
-	 *
-	 * @return string
+	 * @var
 	 */
-	public function getKey() {
-		if (isset($this->key)) {
-			return $this->key;
-		}
+	private $key;
+
+	/**
+	 * @var
+	 */
+	private $locale;
+
+
+	public function __construct($key, $locale) {
+
+		$this->key = $key;
+		$this->locale = $locale;
 	}
 
 	/**

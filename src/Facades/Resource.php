@@ -7,7 +7,7 @@ class Resource extends Facade {
 
 	protected static function getFacadeAccessor()
 	{
-		return 'resources.manager';
+		return 'resources.resource';
 	}
 
 }

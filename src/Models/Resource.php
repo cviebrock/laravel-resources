@@ -1,12 +1,15 @@
 <?php namespace Cviebrock\LaravelResources\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Config;
+use Illuminate\Database\Eloquent\Model;
 
 
 class Resource extends Model {
 
 	protected $primaryKey = 'resource_id';
+
+	protected $with = ['translations'];
+
 
 	/**
 	 * Create a new Eloquent model instance, with prefixable table name.
@@ -22,6 +25,12 @@ class Resource extends Model {
 		parent::__construct($attributes);
 	}
 
+
+	public static function firstByKey($key) {
+		return static::where('key', $key)->first();
+	}
+
+
 	/**
 	 * Relationship with ResourceTranslations models.
 	 *
@@ -31,3 +40,5 @@ class Resource extends Model {
 		return $this->hasMany('ResourceTranslation');
 	}
 }
+
+

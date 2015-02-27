@@ -31,20 +31,15 @@ class ServiceProvider extends BaseProvider {
 	 * @return void
 	 */
 	public function register() {
-		$this->registerManager();
 		$this->registerResource();
+		$this->registerResourceGroup();
 		$this->registerCommands();
 	}
 
 
-	private function registerManager() {
-		$this->app['resources.manager'] = $this->app->share(function ($app) {
-
-			return new Manager();
-		});
-	}
-
-
+	/**
+	 * Register the Resource
+	 */
 	private function registerResource() {
 		$this->app['resources.resource'] = $this->app->share(function ($app) {
 
@@ -55,6 +50,20 @@ class ServiceProvider extends BaseProvider {
 	}
 
 
+	/**
+	 * Register the ResourceGroup
+	 */
+	private function registerResourceGroup() {
+		$this->app['resources.resourcegroup'] = $this->app->share(function ($app) {
+
+			return new ResourceGroup();
+		});
+	}
+
+
+	/**
+	 * Register the Commands
+	 */
 	private function registerCommands() {
 		$this->app['resources.command.table'] = $this->app->share(function ($app) {
 			return new TableCommand();
