@@ -37,7 +37,13 @@ class Resource extends Model {
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function translations() {
-		return $this->hasMany('ResourceTranslation');
+		return $this->hasMany('Cviebrock\LaravelResources\Models\ResourceTranslation');
+	}
+
+	public function findTranslation($locale) {
+		return $this->translations->first(function($idx, $item) use ($locale) {
+			return $item->locale === $locale;
+		});
 	}
 }
 

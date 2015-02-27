@@ -2,6 +2,7 @@
 
 use Cviebrock\LaravelResources\Commands\ImportCommand;
 use Cviebrock\LaravelResources\Commands\TableCommand;
+use Cviebrock\LaravelResources\Exceptions\InvalidCacheDriverException;
 use Illuminate\Support\ServiceProvider as BaseProvider;
 
 
@@ -43,8 +44,14 @@ class ServiceProvider extends BaseProvider {
 	private function registerResource() {
 		$this->app['resources.resource'] = $this->app->share(function ($app) {
 
+			$cache = $app['cache'];
+			$store = $cache->driver()->getStore();
+			if (!is_subclass_of($store, 'Illuminate\Cache\TaggableStore')) {
+				throw new InvalidCacheDriverException;
+			}
+
 			return new Resource(
-				$app['cache']
+				$cache
 			);
 		});
 	}
@@ -53,7 +60,8 @@ class ServiceProvider extends BaseProvider {
 	/**
 	 * Register the ResourceGroup
 	 */
-	private function registerResourceGroup() {
+	private
+	function registerResourceGroup() {
 		$this->app['resources.resourcegroup'] = $this->app->share(function ($app) {
 
 			return new ResourceGroup();
@@ -64,7 +72,8 @@ class ServiceProvider extends BaseProvider {
 	/**
 	 * Register the Commands
 	 */
-	private function registerCommands() {
+	private
+	function registerCommands() {
 		$this->app['resources.command.table'] = $this->app->share(function ($app) {
 			return new TableCommand();
 		});
@@ -84,7 +93,8 @@ class ServiceProvider extends BaseProvider {
 	 *
 	 * @return array
 	 */
-	public function provides() {
+	public
+	function provides() {
 		return [
 			'resources.manager',
 			'resources.command.table',

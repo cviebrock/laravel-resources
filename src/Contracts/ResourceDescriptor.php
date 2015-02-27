@@ -19,12 +19,12 @@ interface ResourceDescriptor {
 
 
 	/**
-	 * Get the keyed array of default values for this resource (also used for populating the data store).
+	 * Get the keyed array of seed values for this resource (used for populating the data store).
 	 * Key is the locale, value is the value.
 	 *
 	 * @return array
 	 */
-	public function getDefaultValues();
+	public function getSeedValues();
 
 
 	/**
