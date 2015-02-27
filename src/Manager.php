@@ -3,10 +3,9 @@
 use Config;
 use Cviebrock\LaravelResources\Exceptions\ResourceDescriptorNotDefinedException;
 use Cviebrock\LaravelResources\Exceptions\ResourceRecordNotDefinedException;
-use Illuminate\Support\NamespacedItemResolver;
 
 
-class Manager extends NamespacedItemResolver {
+class Manager {
 
 	/**
 	 * Dot-notation array of key->class resources.
