@@ -1,9 +1,11 @@
 <?php namespace Cviebrock\LaravelResources\Commands;
 
+use Config;
+use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
 
-class ImportCommand extends BaseCommand {
+class ImportCommand extends Command {
 
 	/**
 	 * Command name.
@@ -19,6 +21,7 @@ class ImportCommand extends BaseCommand {
 	 */
 	protected $description = 'Populate the resources table with new data from the configuration files.';
 
+
 	/**
 	 * Run the command.
 	 */
@@ -26,14 +29,13 @@ class ImportCommand extends BaseCommand {
 
 		$manager = $this->laravel['resources.manager'];
 
-		$resources = array_dot($this->config['resources']);
+		$resources = array_dot(Config::get('resources::resources', []));
 		dd($resources);
 
-		foreach($resources as $key => $class) {
+		foreach ($resources as $key => $class) {
 
 			$resource = $manager->get($key);
 			dd($resource);
-
 		}
 		//
 		//		$resources->loadAll();
@@ -60,6 +62,7 @@ class ImportCommand extends BaseCommand {
 		//
 		//		$this->info('Resources successfully populated!');
 	}
+
 
 	/**
 	 * Get the console command options.

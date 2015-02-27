@@ -40,10 +40,7 @@ class ServiceProvider extends BaseProvider {
 	private function registerManager() {
 		$this->app['resources.manager'] = $this->app->share(function ($app) {
 
-			$manager = new Manager();
-			$manager->setConfig($app['config']['resources::config']);
-
-			return $manager;
+			return new Manager();
 		});
 	}
 
@@ -60,19 +57,13 @@ class ServiceProvider extends BaseProvider {
 
 	private function registerCommands() {
 		$this->app['resources.command.table'] = $this->app->share(function ($app) {
-			$command = new TableCommand();
-			$command->setConfig($app['config']['resources::config']);
-
-			return $command;
+			return new TableCommand();
 		});
 
 		$this->commands('resources.command.table');
 
 		$this->app['resources.command.import'] = $this->app->share(function ($app) {
-			$command = new ImportCommand();
-			$command->setConfig($app['config']['resources::config']);
-
-			return $command;
+			return new ImportCommand();
 		});
 
 		$this->commands('resources.command.import');

@@ -23,21 +23,4 @@ return [
 	 */
 	'cachePrefix' => 'resources',
 
-	/**
-	 * The default locale to use for translateable resources.
-	 *
-	 * By default, the package will use the value returned by
-	 * Config::get('app.locale'), but you can override that here.
-	 */
-	'defaultLocale' => null,
-
-	/**
-	 * Here is where you define all the resources your application needs.
-	 * You can make it a nested array, or use dot-notation.
-	 *
-	 * The values of the array represent the resource descriptor classes
-	 * that are used
-	 */
-	'resources' => []
-
 ];

@@ -9,12 +9,14 @@ interface ResourceDescriptor {
 	 */
 	public function getName();
 
+
 	/**
 	 * Get a more detailed description of this resource.
 	 *
 	 * @return string
 	 */
 	public function getDescription();
+
 
 	/**
 	 * Get the keyed array of default values for this resource (also used for populating the data store).
@@ -24,6 +26,7 @@ interface ResourceDescriptor {
 	 */
 	public function getDefaultValues();
 
+
 	/**
 	 * Transform the native value into a format suitable for storage.
 	 *
@@ -31,6 +34,7 @@ interface ResourceDescriptor {
 	 * @return string
 	 */
 	public function toStorage($value);
+
 
 	/**
 	 * Transform the value from the stored value to a native value.

@@ -1,5 +1,6 @@
 <?php namespace Cviebrock\LaravelResources;
 
+use Config;
 use Cviebrock\LaravelResources\Exceptions\ResourceDescriptorNotDefinedException;
 use Cviebrock\LaravelResources\Exceptions\ResourceRecordNotDefinedException;
 use Illuminate\Support\NamespacedItemResolver;
@@ -14,11 +15,6 @@ class Manager extends NamespacedItemResolver {
 	 */
 	protected $resources;
 
-	/**
-	 * @var array
-	 */
-	protected $config;
-
 
 	public function get($key, $defaultValue = null) {
 		if (!$descriptorClass = array_get($this->getResources(), $key)) {
@@ -28,8 +24,6 @@ class Manager extends NamespacedItemResolver {
 		$resource = \App::make('resources.resource');
 		$resource->setKey($key);
 		$resource->setDefaultValue($defaultValue);
-		$resource->setLocale($this->config['defaultLocale']);
-		$resource->setCachePrefix($this->config['cachePrefix']);
 		$resource->setDescriptor(new $descriptorClass);
 
 		return $resource;
@@ -41,7 +35,7 @@ class Manager extends NamespacedItemResolver {
 	 */
 	public function getResources() {
 		if (!$this->resources) {
-			$this->resources = array_dot($this->config['resources']);
+			$this->resources = array_dot( Config::get('resources::resources') );
 		}
 
 		return $this->resources;
@@ -49,16 +43,10 @@ class Manager extends NamespacedItemResolver {
 
 
 	public function locale($locale) {
-		$this->config['defaultLocale'] = $locale;
+		$this->locale = $locale;
 
 		return $this;
 	}
 
 
-	/**
-	 * @param array $config
-	 */
-	public function setConfig(array $config) {
-		$this->config = $config;
-	}
 }

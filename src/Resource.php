@@ -93,28 +93,10 @@ class Resource {
 
 
 	/**
-	 * Set cache prefix.
-	 *
-	 * @param string $cachePrefix
-	 */
-	public function setCachePrefix($cachePrefix) {
-		$this->cachePrefix = $cachePrefix;
-	}
-
-
-	/**
 	 * @param mixed $defaultValue
 	 */
 	public function setDefaultValue($defaultValue) {
 		$this->defaultValue = $defaultValue;
-	}
-
-
-	/**
-	 * @param string $locale
-	 */
-	public function setLocale($locale) {
-		$this->locale = $locale;
 	}
 
 
@@ -124,7 +106,7 @@ class Resource {
 
 		// check cache
 
-		$cacheKey = $this->cachePrefix . '.' . $this->key;
+		$cacheKey = Config::get('resources::config.cachePrefix') . '.' . $this->key;
 		$value = $this->cache->get($cacheKey, $microtime);
 
 		if ($value !== $microtime) {

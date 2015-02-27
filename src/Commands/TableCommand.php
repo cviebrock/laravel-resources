@@ -1,6 +1,10 @@
 <?php namespace Cviebrock\LaravelResources\Commands;
 
-class TableCommand extends BaseCommand {
+use Config;
+use Illuminate\Console\Command;
+
+
+class TableCommand extends Command {
 
 	/**
 	 * Command name.
@@ -46,6 +50,7 @@ class TableCommand extends BaseCommand {
 	/**
 	 * Create a base migration file for the settings table.
 	 *
+	 * @param string $stub
 	 * @return string
 	 */
 	protected function createMigration($stub) {
@@ -58,6 +63,7 @@ class TableCommand extends BaseCommand {
 	/**
 	 * Get the contents of the migration stub and insert the correct table name.
 	 *
+	 * @param string $stub
 	 * @return string
 	 */
 	protected function getMigrationStub($stub) {
@@ -66,7 +72,7 @@ class TableCommand extends BaseCommand {
 
 		return str_replace(
 			'%PREFIX%',
-			array_get($this->config, 'tablePrefix', ''),
+			Config::get('resources::config.tablePrefix', ''),
 			$data
 		);
 	}
