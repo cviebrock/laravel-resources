@@ -19,39 +19,47 @@ class ImportCommand extends BaseCommand {
 	 */
 	protected $description = 'Populate the resources table with new data from the configuration files.';
 
-
 	/**
 	 * Run the command.
 	 */
 	public function fire() {
 
-		$resources = $this->laravel['resources.manager'];
+		$manager = $this->laravel['resources.manager'];
 
-		$resources->loadAll();
+		$resources = array_dot($this->config['resources']);
+		dd($resources);
 
-		dd('foo');
+		foreach($resources as $key => $class) {
 
-//		$force = $this->option('force');
-//		$defaultResources = $this->laravel['config']->get('resources::defaults');
-//		$existingResources = $settings->all();
-//
-//		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
-//
-//		foreach ($defaultResources as $key => $data) {
-//
-//			if (array_key_exists($key, $existingResources) && !$force) {
-//				$this->comment('Skipping existing key "' . $key . '"');
-//			} else {
-//				$resources->set($key, $data['value'], $data['description']);
-//				$this->comment('Set key "' . $key . '" => "' . $data['value'] . '"');
-//			}
-//		}
-//
-//		$resources->forceReload();
-//
-//		$this->info('Resources successfully populated!');
+			$resource = $manager->get($key);
+			dd($resource);
+
+		}
+		//
+		//		$resources->loadAll();
+		//
+		//		dd('foo');
+
+		//		$force = $this->option('force');
+		//		$defaultResources = $this->laravel['config']->get('resources::defaults');
+		//		$existingResources = $settings->all();
+		//
+		//		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
+		//
+		//		foreach ($defaultResources as $key => $data) {
+		//
+		//			if (array_key_exists($key, $existingResources) && !$force) {
+		//				$this->comment('Skipping existing key "' . $key . '"');
+		//			} else {
+		//				$resources->set($key, $data['value'], $data['description']);
+		//				$this->comment('Set key "' . $key . '" => "' . $data['value'] . '"');
+		//			}
+		//		}
+		//
+		//		$resources->forceReload();
+		//
+		//		$this->info('Resources successfully populated!');
 	}
-
 
 	/**
 	 * Get the console command options.

@@ -19,9 +19,9 @@ return [
 	'tablePrefix' => '',
 
 	/**
-	 * The cache key used to store the settings.
+	 * The cache prefix used to store the settings.
 	 */
-	'cacheKey' => 'resources',
+	'cachePrefix' => 'resources',
 
 	/**
 	 * The default locale to use for translateable resources.
@@ -31,8 +31,13 @@ return [
 	 */
 	'defaultLocale' => null,
 
-	'classes' => [
-//		'home' => 'MyApp\Resources\HomeResourceDefinition',
-	]
+	/**
+	 * Here is where you define all the resources your application needs.
+	 * You can make it a nested array, or use dot-notation.
+	 *
+	 * The values of the array represent the resource descriptor classes
+	 * that are used
+	 */
+	'resources' => []
 
 ];

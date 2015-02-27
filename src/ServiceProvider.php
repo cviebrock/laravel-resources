@@ -14,12 +14,6 @@ class ServiceProvider extends BaseProvider {
 	 */
 	protected $defer = false;
 
-	/**
-	 * Configuration (load once for ease of use).
-	 *
-	 * @var array
-	 */
-	protected $config;
 
 	/**
 	 * Bootstrap the application events.
@@ -38,6 +32,7 @@ class ServiceProvider extends BaseProvider {
 	 */
 	public function register() {
 		$this->registerManager();
+		$this->registerResource();
 		$this->registerCommands();
 	}
 
@@ -45,10 +40,19 @@ class ServiceProvider extends BaseProvider {
 	private function registerManager() {
 		$this->app['resources.manager'] = $this->app->share(function ($app) {
 
-			return new Manager(
-				$app['cache'],
-				$app['db'],
-				$app['config']['resources::config']
+			$manager = new Manager();
+			$manager->setConfig($app['config']['resources::config']);
+
+			return $manager;
+		});
+	}
+
+
+	private function registerResource() {
+		$this->app['resources.resource'] = $this->app->share(function ($app) {
+
+			return new Resource(
+				$app['cache']
 			);
 		});
 	}

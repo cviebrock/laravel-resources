@@ -9,7 +9,7 @@
 	],
 	"require": {
 		"php": ">=5.4",
-		"illuminate/cache": "~4.2",
+		"illuminate/redis": "~4.2",
 		"illuminate/console": "~4.2",
 		"illuminate/database": "~4.2",
 		"illuminate/support": "~4.2"

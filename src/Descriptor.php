@@ -1,9 +1,20 @@
-<?php namespace Cviebrock\LaravelResources\Types;
+<?php namespace Cviebrock\LaravelResources;
 
-use Cviebrock\LaravelResources\Contracts\ResourceType;
+use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
 
 
-abstract class Base implements ResourceType {
+abstract class Descriptor implements ResourceDescriptor {
+
+	/**
+	 * Get the key for this resource.
+	 *
+	 * @return string
+	 */
+	public function getKey() {
+		if (isset($this->key)) {
+			return $this->key;
+		}
+	}
 
 	/**
 	 * Get a descriptive name for this resource.
@@ -20,11 +31,12 @@ abstract class Base implements ResourceType {
 	abstract public function getDescription();
 
 	/**
-	 * Get the default value for this resource (also used for populating the data store).
+	 * Get the keyed array of default values for this resource (also used for populating the data store).
+	 * Key is the locale, value is the value.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	abstract public function getDefaultValue();
+	abstract public function getDefaultValues();
 
 	/**
 	 * Transform the native value into a format suitable for storage.
@@ -45,5 +57,4 @@ abstract class Base implements ResourceType {
 	public function fromStorage($value) {
 		return unserialize($value);
 	}
-
 }

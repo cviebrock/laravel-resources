@@ -1,69 +1,64 @@
 <?php namespace Cviebrock\LaravelResources;
 
-use Cviebrock\LaravelResources\Exceptions\NamespaceNotDefinedException;
-use Illuminate\Cache\CacheManager;
-use Illuminate\Database\DatabaseManager;
+use Cviebrock\LaravelResources\Exceptions\ResourceDescriptorNotDefinedException;
+use Cviebrock\LaravelResources\Exceptions\ResourceRecordNotDefinedException;
 use Illuminate\Support\NamespacedItemResolver;
 
 
 class Manager extends NamespacedItemResolver {
 
-	protected $namespaces = [];
-
 	/**
-	 * @var CacheManager
+	 * Dot-notation array of key->class resources.
+	 *
+	 * @var array
 	 */
-	private $cache;
-
-	/**
-	 * @var DatabaseManager
-	 */
-	private $database;
+	protected $resources;
 
 	/**
 	 * @var array
 	 */
-	private $config;
+	protected $config;
 
-	public function __construct(CacheManager $cache, DatabaseManager $database, array $config) {
-		$this->cache = $cache;
-		$this->database = $database;
+
+	public function get($key, $defaultValue = null) {
+		if (!$descriptorClass = array_get($this->getResources(), $key)) {
+			throw (new ResourceDescriptorNotDefinedException)->setKey($key);
+		}
+
+		$resource = \App::make('resources.resource');
+		$resource->setKey($key);
+		$resource->setDefaultValue($defaultValue);
+		$resource->setLocale($this->config['defaultLocale']);
+		$resource->setCachePrefix($this->config['cachePrefix']);
+		$resource->setDescriptor(new $descriptorClass);
+
+		return $resource;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getResources() {
+		if (!$this->resources) {
+			$this->resources = array_dot($this->config['resources']);
+		}
+
+		return $this->resources;
+	}
+
+
+	public function locale($locale) {
+		$this->config['defaultLocale'] = $locale;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param array $config
+	 */
+	public function setConfig(array $config) {
 		$this->config = $config;
-	}
-
-	public function getRecord($key) {
-
-		list($namespace, $group, $item) = $this->parseKey($key);
-
-		$record = $this->loadNamespace($namespace)->getRecord($group, $item);
-
-		dd($record);
-	}
-
-	protected function loadNamespace($namespace, $class = null) {
-
-		if (!isset($this->namespaces[$namespace])) {
-			$class = $class ?: array_get($this->config, 'namespaces.' . $namespace);
-			if (!$class) {
-				throw new NamespaceNotDefinedException('Resource namespace not defined: ' . $namespace);
-			}
-
-			$this->namespaces[$namespace] = new $class;
-		}
-
-		return $this->namespaces[$namespace];
-	}
-
-	public function loadAll() {
-
-		$all = [];
-		$namespaces = array_get($this->config, 'namespaces', []);
-
-		foreach ($namespaces as $namespace => $class) {
-			$resources = $this->loadNamespace($namespace, $class)->loadResources();
-			$all = array_merge($all, array_dot($resources, $namespace.'::'));
-		}
-
-		return $all;
 	}
 }

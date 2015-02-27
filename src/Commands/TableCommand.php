@@ -35,7 +35,7 @@ class TableCommand extends BaseCommand {
 		foreach ($this->stubs as $stub) {
 			$fullPath = $this->createMigration($stub);
 			file_put_contents($fullPath, $this->getMigrationStub($stub));
-			$this->comment('Created migration: ' . basename($fullPath));
+			$this->comment(basename($fullPath));
 		}
 		$this->info('Migrations created successfully!');
 		$this->call('dump-autoload');
