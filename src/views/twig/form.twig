@@ -1,0 +1,12 @@
+{#
+	Renders a basic form for managing the given resources
+#}
+<form action="{{ action }}" method="{{ method }}" {% for attr in attributes %}{{ attr }}{% endfor %}>
+
+	{# Render the resource inputs #}
+	{% for resource in resources %}
+		{{ resource.renderInput() }}
+	{% endfor %}
+
+	<input type="submit" value="Submit"/>
+</form>

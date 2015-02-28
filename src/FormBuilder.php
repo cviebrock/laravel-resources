@@ -1,11 +1,8 @@
-<?php
-
-namespace Cviebrock\LaravelResources;
-
+<?php namespace Cviebrock\LaravelResources;
 
 use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
+use Cviebrock\LaravelResources\Exceptions\FormActionNotDefined;
 use Cviebrock\LaravelResources\Exceptions\FormResourcesNotSpecified;
-use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Contracts\MessageProviderInterface;
 use Illuminate\Support\MessageBag;
@@ -32,10 +29,26 @@ class FormBuilder implements MessageProviderInterface {
 	 */
 	protected $resources;
 
-	public function __construct($resources) {
+	/**
+	 * @var array
+	 */
+	protected $attributes;
+
+	/**
+	 * @var string
+	 */
+	protected $method;
+
+	/**
+	 * @var string
+	 */
+	protected $action;
+
+	public function __construct($resources, $formAttributes) {
 
 		$this->errors = [];
 		$this->loadResourcesWithDescriptors($resources);
+		$this->loadFormAttributes($formAttributes);
 	}
 
 	/**
@@ -97,13 +110,7 @@ class FormBuilder implements MessageProviderInterface {
 	 */
 	public function renderForm() {
 
-		$resources = $this->resources;
-
-		if (empty($resources)) {
-			throw new FormResourcesNotSpecified('No resources were found to render the form.');
-		}
-
-		return View::make($this->template, compact('resources'))->render();
+		return View::make($this->template, $this->getFormData())->render();
 	}
 
 	/**
@@ -120,6 +127,11 @@ class FormBuilder implements MessageProviderInterface {
 		return !$invalid;
 	}
 
+	/**
+	 * Load validation rules from a resource
+	 *
+	 * @param ResourceDescriptor $resource
+	 */
 	private function loadValidationFromResource(ResourceDescriptor $resource) {
 
 		if ($validation = $resource->validate()) {
@@ -160,5 +172,54 @@ class FormBuilder implements MessageProviderInterface {
 		// Probably a resource key => val array
 		// Get resource from Resource Manager
 		return Resource::key($key)->getDescriptor()->setValue($resource);
+	}
+
+	/**
+	 * @return Collection
+	 * @throws FormResourcesNotSpecified
+	 */
+	private function getFormData() {
+
+		$resources = $this->resources;
+
+		if (empty($resources)) {
+			throw new FormResourcesNotSpecified('No resources were found to render the form.');
+		}
+
+		return compact('resources') + [
+			'action' => $this->action,
+			'method' => $this->method,
+			'attributes' => $this->attributes,
+		];
+	}
+
+	/**
+	 * Load required form attributes
+	 *  [
+	 *      url => The url the form is submitting to,
+	 *      method => Request type form is using to submit,
+	 *      attributes => Any attributes added to form element, such as class="form"
+	 *  ]
+	 *
+	 * @param $formAttributes
+	 * @throws FormActionNotDefined
+	 */
+	private function loadFormAttributes($formAttributes) {
+
+		if (empty($formAttributes['action'])) {
+			throw new FormActionNotDefined('The form action was not set.');
+		}
+
+		$this->action = $formAttributes['action'];
+		$this->attributes = [];
+		$this->method = 'POST';
+
+		if (!empty($formAttributes['attributes'])) {
+			$this->attributes = $formAttributes['attributes'];
+		}
+
+		if (!empty($formAttributes['method'])) {
+			$this->method = $formAttributes['method'];
+		}
 	}
 }

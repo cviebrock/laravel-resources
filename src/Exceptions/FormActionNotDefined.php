@@ -1,5 +1,5 @@
 <?php namespace Cviebrock\LaravelResources\Exceptions;
 
-class FormResourcesNotSpecified extends \Exception {
+class FormActionNotDefined extends \Exception {
 
 }
