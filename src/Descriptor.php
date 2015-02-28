@@ -25,16 +25,9 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	private $key;
 
-	/**
-	 * @var
-	 */
-	private $locale;
 
-
-	public function __construct($key, $locale) {
-
+	public function __construct($key) {
 		$this->key = $key;
-		$this->locale = $locale;
 	}
 
 
@@ -47,26 +40,10 @@ abstract class Descriptor implements ResourceDescriptor {
 
 
 	/**
-	 * @param string $description
-	 */
-	public function setDescription($description) {
-		$this->description = $description;
-	}
-
-
-	/**
 	 * @return array
 	 */
 	public function getSeedValues() {
 		return $this->seedValues;
-	}
-
-
-	/**
-	 * @param array $seedValues
-	 */
-	public function setSeedValues($seedValues) {
-		$this->seedValues = $seedValues;
 	}
 
 
@@ -99,13 +76,5 @@ abstract class Descriptor implements ResourceDescriptor {
 		if (!$this->name) {
 			throw (new ResourceDescriptorNameNotDefinedException)->setReference(get_called_class());
 		}
-	}
-
-
-	/**
-	 * @param mixed $name
-	 */
-	public function setName($name) {
-		$this->name = $name;
 	}
 }

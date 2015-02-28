@@ -1,6 +1,7 @@
 <?php namespace Cviebrock\LaravelResources\Commands;
 
 use Config;
+use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -27,40 +28,37 @@ class ImportCommand extends Command {
 	 */
 	public function fire() {
 
+		$force = $this->option('force');
+		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
+
 		$manager = $this->laravel['resources.resource'];
 
-		$resources = array_dot(Config::get('resources::resources', []));
-		dd($resources);
+		$allResources = array_dot(Config::get('resources::resources', []));
 
-		foreach ($resources as $key => $class) {
+		foreach ($allResources as $key => $descriptorClass) {
 
-			$resource = $manager->get($key);
-			dd($resource);
+			$resource = $manager->key($key);
+
+			foreach ($resource->getDescriptor()->getSeedValues() as $locale => $value) {
+
+				$resource->locale($locale);
+
+				try {
+					$existingValue = $resource->getFromDB();
+				} catch (ResourceNotDefinedException $e) {
+					// resource hasn't been created ... that's okay, just force a save
+					$existingValue = !$value;
+				}
+
+				if ($force || $existingValue !== $value) {
+					$resource->setValue($value);
+					$this->comment('Settting key [' . $resource->getLocalizedKey() . ']');
+				} else {
+					$this->comment('Skipping key [' . $resource->getLocalizedKey() . ']');
+				}
+			}
 		}
-		//
-		//		$resources->loadAll();
-		//
-		//		dd('foo');
-
-		//		$force = $this->option('force');
-		//		$defaultResources = $this->laravel['config']->get('resources::defaults');
-		//		$existingResources = $settings->all();
-		//
-		//		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
-		//
-		//		foreach ($defaultResources as $key => $data) {
-		//
-		//			if (array_key_exists($key, $existingResources) && !$force) {
-		//				$this->comment('Skipping existing key "' . $key . '"');
-		//			} else {
-		//				$resources->set($key, $data['value'], $data['description']);
-		//				$this->comment('Set key "' . $key . '" => "' . $data['value'] . '"');
-		//			}
-		//		}
-		//
-		//		$resources->forceReload();
-		//
-		//		$this->info('Resources successfully populated!');
+		$this->info('Resources imported!');
 	}
 
 

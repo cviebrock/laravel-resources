@@ -5,6 +5,7 @@ use Cviebrock\LaravelResources\Exceptions\ResourceDescriptorNotDefinedException;
 use Cviebrock\LaravelResources\Exceptions\ResourceKeyNotSpecified;
 use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
 use Cviebrock\LaravelResources\Models\Resource as ResourceModel;
+use Cviebrock\LaravelResources\Models\ResourceTranslation;
 use Illuminate\Cache\CacheManager;
 
 
@@ -30,6 +31,11 @@ class Resource {
 	 */
 	protected $descriptor;
 
+	/**
+	 * @var array
+	 */
+	protected $resourceMap;
+
 
 	/**
 	 * Constructor.
@@ -39,6 +45,7 @@ class Resource {
 	public function __construct(CacheManager $cache) {
 		$this->cache = $cache;
 		$this->setLocale(Config::get('app.locale', 'en'));
+		$this->resourceMap = array_dot(Config::get('resources::resources'));
 	}
 
 
@@ -51,9 +58,9 @@ class Resource {
 	public function locale($locale) {
 		$this->setLocale($locale);
 
-		if ($this->descriptor) {
-			$this->descriptor->setLocale($locale);
-		}
+		//		if ($this->descriptor) {
+		//			$this->descriptor->setLocale($locale);
+		//		}
 
 		return $this;
 	}
@@ -83,7 +90,7 @@ class Resource {
 			return $value;
 		}
 
-		throw (new ResourceNotDefinedException)->setReference($this->getLocale(), $this->getKey());
+		throw (new ResourceNotDefinedException)->setReference($this->getKey(), $this->getLocale());
 	}
 
 
@@ -96,11 +103,11 @@ class Resource {
 	 */
 	public function key($key) {
 
-		if (!$class = array_get(Config::get('resources::resources'), $key)) {
+		if (!$class = array_get($this->resourceMap, $key)) {
 			throw (new ResourceDescriptorNotDefinedException)->setKey($key);
 		}
 
-		$this->descriptor = new $class($key, $this->getLocale());
+		$this->descriptor = new $class($key);
 
 		$this->setKey($key);
 
@@ -127,11 +134,8 @@ class Resource {
 	 * @return mixed|null
 	 */
 	protected function loadValueFromDatabase() {
-		if (!$record = ResourceModel::firstByKey($this->getKey())) {
-			return null;
-		}
 
-		if (!$translation = $record->findTranslation($this->getLocale())) {
+		if (!$translation = $this->findTranslationModel($this->getKey(), $this->getLocale())) {
 			return null;
 		}
 
@@ -155,26 +159,6 @@ class Resource {
 
 
 	/**
-	 * Get the current locale for the resource.
-	 *
-	 * @return string
-	 */
-	public function getLocale() {
-		return $this->locale;
-	}
-
-
-	/**
-	 * Set resource local.
-	 *
-	 * @param string $locale
-	 */
-	public function setLocale($locale) {
-		$this->locale = $locale;
-	}
-
-
-	/**
 	 * Get the current key for the resource.
 	 *
 	 * @return string
@@ -191,6 +175,26 @@ class Resource {
 	 */
 	public function setKey($key) {
 		$this->key = $key;
+	}
+
+
+	/**
+	 * Get the current locale for the resource.
+	 *
+	 * @return string
+	 */
+	public function getLocale() {
+		return $this->locale;
+	}
+
+
+	/**
+	 * Set resource local.
+	 *
+	 * @param string $locale
+	 */
+	public function setLocale($locale) {
+		$this->locale = $locale;
 	}
 
 
@@ -244,12 +248,32 @@ class Resource {
 
 
 	/**
+	 * Load the translation model for a given key and locale
+	 *
+	 * @param $key
+	 * @param $locale
+	 * @return ResourceTranslation|null
+	 */
+	protected function findTranslationModel($key, $locale) {
+		if (!$record = $this->findResourceModel($key)) {
+			return null;
+		}
+
+		if (!$translation = $record->findTranslation($locale)) {
+			return null;
+		}
+
+		return $translation;
+	}
+
+
+	/**
 	 * Build the localized key for the resource (locale + key)
 	 *
 	 * @return string
 	 * @throws ResourceKeyNotSpecified
 	 */
-	protected function getLocalizedKey() {
+	public function getLocalizedKey() {
 		if (!$this->key) {
 			throw new ResourceKeyNotSpecified;
 		}
@@ -257,4 +281,75 @@ class Resource {
 		return $this->locale . '.' . $this->key;
 	}
 
+
+	/**
+	 * Load the resource model for a given key.
+	 *
+	 * @param $key
+	 * @return ResourceModel|null
+	 */
+	protected function findResourceModel($key) {
+		return ResourceModel::firstByKey($key);
+	}
+
+
+	public function getFromDB($key = null) {
+		if ($key) {
+			$this->key($key);
+		}
+
+		return $this->loadValueFromDatabase();
+	}
+
+
+	public function set($key, $value) {
+		$this->key($key);
+
+		return $this->setValue($value);
+	}
+
+
+	public function setValue($value) {
+		$this->saveValueToDatabase($value);
+		$this->storeValueToCache($value);
+
+		return $this;
+	}
+
+
+	protected function saveValueToDatabase($value) {
+
+		$record = $this->findResourceModel($this->getKey());
+
+		if (!$record) {
+			$record = ResourceModel::create([
+				'key' => $this->getKey(),
+				'resource_class' => get_class($this->descriptor),
+			]);
+		}
+
+		$translation = $this->findTranslationModel($this->getKey(), $this->getLocale());
+
+		if ($translation) {
+			$translation->update([
+				'value' => $value
+			]);
+		} else {
+			$translation = new ResourceTranslation([
+				'locale' => $this->getLocale(),
+				'value' => $value
+			]);
+			$record->translations()->save($translation);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @return Descriptor
+	 */
+	public function getDescriptor() {
+		return $this->descriptor;
+	}
 }

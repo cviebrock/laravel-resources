@@ -24,9 +24,9 @@ class ResourceNotDefinedException extends \Exception {
 	 * @param string $key
 	 * @return $this
 	 */
-	public function setReference($locale, $key) {
-		$this->locale = $locale;
+	public function setReference($key, $locale) {
 		$this->key = $key;
+		$this->locale = $locale;
 		$this->message = "Resource not found for [{$locale}:{$key}].";
 
 		return $this;

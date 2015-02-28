@@ -8,6 +8,8 @@ class Resource extends Model {
 
 	protected $primaryKey = 'resource_id';
 
+	protected $fillable = ['key','resource_class'];
+
 	protected $with = ['translations'];
 
 

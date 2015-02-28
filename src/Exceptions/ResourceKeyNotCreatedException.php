@@ -1,6 +1,6 @@
 <?php namespace Cviebrock\LaravelResources\Exceptions;
 
-class ResourceDescriptorNotDefinedException extends \Exception {
+class ResourceKeyNotCreatedException extends \Exception {
 
 	/**
 	 * The key that was attempted to be loaded.
@@ -13,7 +13,7 @@ class ResourceDescriptorNotDefinedException extends \Exception {
 	/**
 	 * Get the key name.
 	 *
-	 * @return string
+	 * @return mixed
 	 */
 	public function getKey() {
 		return $this->key;
@@ -23,13 +23,12 @@ class ResourceDescriptorNotDefinedException extends \Exception {
 	/**
 	 * Set the key name.
 	 *
-	 * @param $key
+	 * @param mixed $key
 	 * @return $this
 	 */
-
 	public function setKey($key) {
 		$this->key = $key;
-		$this->message = "Resource descriptor not found for [{$key}].";
+		$this->message = "Could not create resource [{$key}].";
 
 		return $this;
 	}

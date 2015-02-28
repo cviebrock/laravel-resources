@@ -8,6 +8,9 @@ class ResourceTranslation extends Model {
 
 	protected $primaryKey = 'resource_translation_id';
 
+	protected $fillable = ['locale','value'];
+
+
 	/**
 	 * Create a new Eloquent model instance, with prefixable table name.
 	 *
