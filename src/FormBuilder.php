@@ -130,12 +130,13 @@ class FormBuilder implements MessageProviderInterface {
 	/**
 	 * Load validation rules from a resource
 	 *
+	 * @param $resourceKey
 	 * @param ResourceDescriptor $resource
 	 */
-	private function loadValidationFromResource(ResourceDescriptor $resource) {
+	private function loadValidationFromResource($resourceKey, ResourceDescriptor $resource) {
 
 		if ($validation = $resource->validate()) {
-			$this->addValidation($resource->key, $validation);
+			$this->addValidation($resourceKey, $validation);
 		}
 
 	}
@@ -154,8 +155,8 @@ class FormBuilder implements MessageProviderInterface {
 
 			$resource = $this->resolveAsResource($resourceKey, $resourceValue);
 
-			$this->loadValidationFromResource($resource);
-			$this->resources->put($resource->key, $resource);
+			$this->loadValidationFromResource($resourceKey, $resource);
+			$this->resources->put($resourceKey, $resource);
 		}
 
 	}
