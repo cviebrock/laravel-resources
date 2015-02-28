@@ -169,9 +169,14 @@ class FormBuilder implements MessageProviderInterface {
 	 */
 	private function resolveAsResource($key, $resource) {
 
-		// Probably a resource key => val array
+		// Should be a resource key => val array
 		// Get resource from Resource Manager
-		return Resource::key($key)->getDescriptor()->setValue($resource);
+		$resourceDescriptor = Resource::key($key)->getDescriptor();
+
+		// Set the resource value on the descriptor class
+		$resourceDescriptor->setValue($resource);
+
+		return $resourceDescriptor;
 	}
 
 	/**
@@ -196,7 +201,7 @@ class FormBuilder implements MessageProviderInterface {
 	/**
 	 * Load required form attributes
 	 *  [
-	 *      url => The url the form is submitting to,
+	 *      action => The url the form is submitting to,
 	 *      method => Request type form is using to submit,
 	 *      attributes => Any attributes added to form element, such as class="form"
 	 *  ]
@@ -211,8 +216,8 @@ class FormBuilder implements MessageProviderInterface {
 		}
 
 		$this->action = $formAttributes['action'];
-		$this->attributes = [];
 		$this->method = 'POST';
+		$this->attributes = [];
 
 		if (!empty($formAttributes['attributes'])) {
 			$this->attributes = $formAttributes['attributes'];
