@@ -115,8 +115,9 @@ class Resource {
 	 */
 	protected function loadValueFromCache() {
 		$cacheKey = $this->getLocalizedCacheKey();
+		$tags = $this->buildCacheTags($cacheKey);
 
-		return $this->cache->get($cacheKey, null);
+		return $this->cache->tags($tags)->get($cacheKey);
 	}
 
 
@@ -210,21 +211,6 @@ class Resource {
 
 
 	/**
-	 * Build the localized key for the resource (locale + key)
-	 *
-	 * @return string
-	 * @throws ResourceKeyNotSpecified
-	 */
-	protected function getLocalizedKey() {
-		if (!$this->key) {
-			throw new ResourceKeyNotSpecified;
-		}
-
-		return $this->locale . '.' . $this->key;
-	}
-
-
-	/**
 	 * Build an array of key tags from the cache key.
 	 *
 	 * For example, the key "resources.en.homepage.title" will get converted into the array:
@@ -254,6 +240,21 @@ class Resource {
 		$tags[] = $key;
 
 		return $tags;
+	}
+
+
+	/**
+	 * Build the localized key for the resource (locale + key)
+	 *
+	 * @return string
+	 * @throws ResourceKeyNotSpecified
+	 */
+	protected function getLocalizedKey() {
+		if (!$this->key) {
+			throw new ResourceKeyNotSpecified;
+		}
+
+		return $this->locale . '.' . $this->key;
 	}
 
 }
