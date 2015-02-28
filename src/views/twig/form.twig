@@ -2,10 +2,11 @@
 	Renders a basic form for managing the given resources
 #}
 <form action="{{ action }}" method="{{ method }}" {% for attr in attributes %}{{ attr }}{% endfor %}>
+	<input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 
 	{# Render the resource inputs #}
 	{% for resource in resources %}
-		{{ resource.renderInput() }}
+		{{ resource.renderInput()|raw }}
 	{% endfor %}
 
 	<input type="submit" value="Submit"/>
