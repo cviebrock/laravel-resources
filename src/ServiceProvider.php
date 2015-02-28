@@ -96,7 +96,7 @@ class ServiceProvider extends BaseProvider {
 	public
 	function provides() {
 		return [
-			'resources.manager',
+			'resources.resource',
 			'resources.command.table',
 			'resources.command.populate'
 		];

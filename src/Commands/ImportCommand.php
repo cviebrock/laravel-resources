@@ -27,7 +27,7 @@ class ImportCommand extends Command {
 	 */
 	public function fire() {
 
-		$manager = $this->laravel['resources.manager'];
+		$manager = $this->laravel['resources.resource'];
 
 		$resources = array_dot(Config::get('resources::resources', []));
 		dd($resources);
