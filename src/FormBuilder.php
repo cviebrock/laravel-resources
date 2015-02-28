@@ -228,4 +228,15 @@ class FormBuilder implements MessageProviderInterface {
 			$this->method = $formAttributes['method'];
 		}
 	}
+
+	/**
+	 * Render the form if outputting this class
+	 *
+	 * @return mixed
+	 */
+	public function __toString() {
+
+		return $this->renderForm();
+	}
+
 }
