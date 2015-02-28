@@ -6,5 +6,6 @@ use Cviebrock\LaravelResources\Descriptor;
 
 abstract class Text extends Descriptor {
 
+	protected $template = 'resources::twig.formInput.text';
 
 }
