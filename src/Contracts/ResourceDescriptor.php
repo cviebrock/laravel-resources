@@ -43,4 +43,11 @@ interface ResourceDescriptor {
 	 * @return mixed
 	 */
 	public function fromStorage($value);
+
+	/**
+	 * Render value as a form input
+	 *
+	 * @return mixed
+	 */
+	public function renderInput();
 }

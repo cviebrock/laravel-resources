@@ -1,6 +1,7 @@
 <?php namespace Cviebrock\LaravelResources;
 
 use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
+use View;
 
 
 abstract class Descriptor implements ResourceDescriptor {
@@ -24,6 +25,11 @@ abstract class Descriptor implements ResourceDescriptor {
 	 * @var
 	 */
 	private $key;
+
+	/**
+	 * @var string
+	 */
+	protected $template = '';
 
 
 	public function __construct($key) {
@@ -77,4 +83,21 @@ abstract class Descriptor implements ResourceDescriptor {
 			throw (new ResourceDescriptorNameNotDefinedException)->setReference(get_called_class());
 		}
 	}
+
+	/**
+	 * Render the descriptor as a form input
+	 *
+	 * @return mixed
+	 */
+	public function renderInput() {
+
+		return View::make($this->template, $this->getInputData())->render();
+	}
+
+	/**
+	 * Form input data used to render the descriptor as an input
+	 *
+	 * @return mixed
+	 */
+	abstract public function getInputData();
 }
