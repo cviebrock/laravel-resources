@@ -12,7 +12,7 @@ use View;
 
 class FormBuilder implements MessageProviderInterface {
 
-	protected $template = 'resources::twig.form';
+	protected $template = 'resources::form';
 
 	/**
 	 * @var array
