@@ -142,7 +142,7 @@ abstract class Descriptor implements ResourceDescriptor {
 		return [
 			'label' => $this->getName(),
 			'id' => $this->key,
-			'name' => $key ? "{$groupKey}[{$key}]" : $this->key,
+			'name' => $key ? "resources[{$groupKey}][{$key}]" : "resources[$this->key]",
 			'value' => $this->getValue()
 		];
 	}
