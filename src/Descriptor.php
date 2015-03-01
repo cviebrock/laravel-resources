@@ -39,7 +39,7 @@ abstract class Descriptor implements ResourceDescriptor {
 	/**
 	 * @var array
 	 */
-	protected $validation = [];
+	protected $validation = '';
 
 
 	/**
