@@ -1,28 +1,20 @@
 <?php namespace Cviebrock\LaravelResources;
 
-use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
 use Cviebrock\LaravelResources\Exceptions\FormActionNotDefined;
 use Cviebrock\LaravelResources\Exceptions\FormResourcesNotSpecified;
+use Cviebrock\LaravelResources\Traits\ResourceDescriptorLoader;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Contracts\MessageProviderInterface;
-use Illuminate\Support\MessageBag;
 use Resource;
-use Validator;
 use View;
 
-class FormBuilder implements MessageProviderInterface {
+class FormBuilder {
 
+	use ResourceDescriptorLoader;
+
+	/**
+	 * @var string
+	 */
 	protected $template = 'resources::form';
-
-	/**
-	 * @var array
-	 */
-	protected $errors;
-
-	/**
-	 * @var array
-	 */
-	protected $validation;
 
 	/**
 	 * @var Collection
@@ -40,78 +32,18 @@ class FormBuilder implements MessageProviderInterface {
 	protected $method;
 
 	/**
-	 * @var array
-	 */
-	protected $validateCollection = [];
-
-
-	/**
 	 * @var string
 	 */
 	protected $action;
 
+
 	public function __construct($resources, $formAttributes) {
 
-		$this->errors = [];
-		$this->loadResourcesWithDescriptors($resources);
+		$this->resources = $this->loadResourcesWithDescriptors($resources);
 		$this->loadFormAttributes($formAttributes);
 		$this->arrangeFormOrder();
 	}
 
-	/**
-	 * Add validation rules
-	 *
-	 * @param $field
-	 * @param $rule
-	 */
-	public function addValidation($field, $rule) {
-
-		$this->validation[$field] = $rule;
-	}
-
-	/**
-	 * The error messages.
-	 *
-	 * @return MessageBag
-	 */
-	public function errors() {
-
-		if ($this->errors instanceof MessageBag) {
-			return $this->errors;
-		}
-
-		return $this->errors = new MessageBag($this->errors);
-	}
-
-	/**
-	 * Get the messages for the instance.
-	 *
-	 * @return \Illuminate\Support\MessageBag
-	 */
-	public function getMessageBag() {
-
-		return $this->errors();
-	}
-
-	/**
-	 * Check if form validation passes
-	 *
-	 * @return bool
-	 */
-	public function passes() {
-
-		return $this->runValidation();
-	}
-
-	/**
-	 * Check if form validation fails
-	 *
-	 * @return bool
-	 */
-	public function fails() {
-
-		return !$this->passes();
-	}
 
 	/**
 	 * Render a form for the given resources
@@ -124,15 +56,6 @@ class FormBuilder implements MessageProviderInterface {
 		return View::make($this->template, $this->getFormData())->render();
 	}
 
-	/**
-	 * Perform validation on the values passed in.
-	 *
-	 * @param $resources
-	 */
-	public function validate($resources) {
-
-		$this->validateCollection = $resources;
-	}
 
 	/**
 	 * Render the form if outputting this class
@@ -144,72 +67,6 @@ class FormBuilder implements MessageProviderInterface {
 		return $this->renderForm();
 	}
 
-	/**
-	 * Runs current form validation
-	 */
-	protected function runValidation() {
-
-		$validation = Validator::make($this->validation, $this->validateCollection);
-
-		if ($invalid = $validation->fails()) {
-			$this->errors = $validation->errors();
-		}
-
-		return !$invalid;
-	}
-
-	/**
-	 * Load validation rules from a resource
-	 *
-	 * @param $resourceKey
-	 * @param ResourceDescriptor $resource
-	 */
-	private function loadValidationFromResource($resourceKey, ResourceDescriptor $resource) {
-
-		if ($validation = $resource->validate()) {
-			$this->addValidation($resourceKey, $validation);
-		}
-
-	}
-
-	/**
-	 * Load the resource collection with descriptors
-	 *
-	 * @param $resources
-	 */
-	private function loadResourcesWithDescriptors($resources) {
-
-		// Map the resources as a collection of descriptors
-		$this->resources = new Collection();
-
-		foreach ($resources as $resourceKey => $resourceValue) {
-
-			$resource = $this->resolveAsResource($resourceKey, $resourceValue);
-
-			$this->loadValidationFromResource($resourceKey, $resource);
-			$this->resources->put($resourceKey, $resource);
-		}
-
-	}
-
-	/**
-	 * Resolve a resource item as a ResourceDescriptor
-	 *
-	 * @param $key
-	 * @param $resource
-	 * @return ResourceDescriptor
-	 */
-	private function resolveAsResource($key, $resource) {
-
-		// Should be a resource key => val array
-		// Get resource from Resource Manager
-		$resourceDescriptor = Resource::key($key)->getDescriptor();
-
-		// Set the resource value on the descriptor class
-		$resourceDescriptor->setValue($resource);
-
-		return $resourceDescriptor;
-	}
 
 	/**
 	 * @return Collection
@@ -229,6 +86,7 @@ class FormBuilder implements MessageProviderInterface {
 			'attributes' => $this->attributes,
 		];
 	}
+
 
 	/**
 	 * Load required form attributes
@@ -259,6 +117,7 @@ class FormBuilder implements MessageProviderInterface {
 			$this->method = $formAttributes['method'];
 		}
 	}
+
 
 	/**
 	 * Arrange the order of the resources so they mirror the order in the resources

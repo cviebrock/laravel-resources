@@ -42,10 +42,14 @@ abstract class Descriptor implements ResourceDescriptor {
 	protected $validation = [];
 
 
+	/**
+	 * @param $key
+	 */
 	public function __construct($key) {
 
 		$this->key = $key;
 	}
+
 
 	/**
 	 * @param $value
@@ -55,6 +59,7 @@ abstract class Descriptor implements ResourceDescriptor {
 		$this->value = $value;
 	}
 
+
 	/**
 	 * @return mixed
 	 */
@@ -62,6 +67,7 @@ abstract class Descriptor implements ResourceDescriptor {
 
 		return $this->value;
 	}
+
 
 	/**
 	 * @return string
@@ -117,6 +123,7 @@ abstract class Descriptor implements ResourceDescriptor {
 		return $this->name;
 	}
 
+
 	/**
 	 * Render the descriptor as a form input
 	 *
@@ -126,6 +133,7 @@ abstract class Descriptor implements ResourceDescriptor {
 
 		return View::make($this->template, $this->getInputData())->render();
 	}
+
 
 	/**
 	 * Form input data used to render the descriptor as an input
@@ -147,6 +155,7 @@ abstract class Descriptor implements ResourceDescriptor {
 		];
 	}
 
+
 	/**
 	 * Base validation criteria
 	 *
@@ -156,4 +165,5 @@ abstract class Descriptor implements ResourceDescriptor {
 
 		return $this->validation;
 	}
+
 }

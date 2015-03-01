@@ -369,6 +369,7 @@ class Resource {
 		return $this->descriptor;
 	}
 
+
 	/**
 	 * @return array
 	 */
@@ -376,4 +377,5 @@ class Resource {
 
 		return $this->resourceMap;
 	}
+
 }
