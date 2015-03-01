@@ -152,7 +152,7 @@ class FormBuilder implements MessageProviderInterface {
 		$validation = Validator::make($this->validation, $this->validateCollection);
 
 		if ($invalid = $validation->fails()) {
-			$this->errors = $validation->messages->getMessageBag();
+			$this->errors = $validation->errors();
 		}
 
 		return !$invalid;
