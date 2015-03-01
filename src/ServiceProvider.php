@@ -42,7 +42,7 @@ class ServiceProvider extends BaseProvider {
 	 * Register the Resource
 	 */
 	private function registerResource() {
-		$this->app['resources.resource'] = $this->app->share(function ($app) {
+		$this->app->bind('resources.resource', function ($app) {
 
 			$cache = $app['cache'];
 			$store = $cache->driver()->getStore();
@@ -62,7 +62,7 @@ class ServiceProvider extends BaseProvider {
 	 */
 	private
 	function registerResourceGroup() {
-		$this->app['resources.resourcegroup'] = $this->app->share(function ($app) {
+		$this->app->bind('resources.group', function ($app) {
 
 			return new ResourceGroup();
 		});
@@ -97,6 +97,7 @@ class ServiceProvider extends BaseProvider {
 	function provides() {
 		return [
 			'resources.resource',
+			'resources.group',
 			'resources.command.table',
 			'resources.command.populate'
 		];
