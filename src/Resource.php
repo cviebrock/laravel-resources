@@ -43,6 +43,7 @@ class Resource {
 	 * @param CacheManager $cache
 	 */
 	public function __construct(CacheManager $cache) {
+
 		$this->cache = $cache;
 		$this->setLocale(Config::get('app.locale', 'en'));
 		$this->resourceMap = array_dot(Config::get('resources::resources'));
@@ -56,6 +57,7 @@ class Resource {
 	 * @return $this
 	 */
 	public function locale($locale) {
+
 		$this->setLocale($locale);
 
 		//		if ($this->descriptor) {
@@ -74,6 +76,7 @@ class Resource {
 	 * @throws ResourceNotDefinedException
 	 */
 	public function get($key = null) {
+
 		if ($key) {
 			$this->key($key);
 		}
@@ -121,6 +124,7 @@ class Resource {
 	 * @return mixed|null
 	 */
 	protected function loadValueFromCache() {
+
 		$cacheKey = $this->getLocalizedCacheKey();
 		$tags = $this->buildCacheTags($cacheKey);
 
@@ -164,6 +168,7 @@ class Resource {
 	 * @return string
 	 */
 	public function getKey() {
+
 		return $this->key;
 	}
 
@@ -174,6 +179,7 @@ class Resource {
 	 * @param string $key
 	 */
 	public function setKey($key) {
+
 		$this->key = $key;
 	}
 
@@ -184,6 +190,7 @@ class Resource {
 	 * @return string
 	 */
 	public function getLocale() {
+
 		return $this->locale;
 	}
 
@@ -194,6 +201,7 @@ class Resource {
 	 * @param string $locale
 	 */
 	public function setLocale($locale) {
+
 		$this->locale = $locale;
 	}
 
@@ -205,6 +213,7 @@ class Resource {
 	 * @throws ResourceKeyNotSpecified
 	 */
 	protected function getLocalizedCacheKey() {
+
 		$cacheKey = $this->getLocalizedKey();
 		if ($cachePrefix = Config::get('resources::config.cachePrefix')) {
 			$cacheKey = $cachePrefix . '.' . $cacheKey;
@@ -255,6 +264,7 @@ class Resource {
 	 * @return ResourceTranslation|null
 	 */
 	protected function findTranslationModel($key, $locale) {
+
 		if (!$record = $this->findResourceModel($key)) {
 			return null;
 		}
@@ -274,6 +284,7 @@ class Resource {
 	 * @throws ResourceKeyNotSpecified
 	 */
 	public function getLocalizedKey() {
+
 		if (!$this->key) {
 			throw new ResourceKeyNotSpecified;
 		}
@@ -289,11 +300,13 @@ class Resource {
 	 * @return ResourceModel|null
 	 */
 	protected function findResourceModel($key) {
+
 		return ResourceModel::firstByKey($key);
 	}
 
 
 	public function getFromDB($key = null) {
+
 		if ($key) {
 			$this->key($key);
 		}
@@ -303,6 +316,7 @@ class Resource {
 
 
 	public function set($key, $value) {
+
 		$this->key($key);
 
 		return $this->setValue($value);
@@ -310,6 +324,7 @@ class Resource {
 
 
 	public function setValue($value) {
+
 		$this->saveValueToDatabase($value);
 		$this->storeValueToCache($value);
 
@@ -350,6 +365,15 @@ class Resource {
 	 * @return Descriptor
 	 */
 	public function getDescriptor() {
+
 		return $this->descriptor;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getResourceMap() {
+
+		return $this->resourceMap;
 	}
 }

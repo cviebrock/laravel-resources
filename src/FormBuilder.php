@@ -49,6 +49,7 @@ class FormBuilder implements MessageProviderInterface {
 		$this->errors = [];
 		$this->loadResourcesWithDescriptors($resources);
 		$this->loadFormAttributes($formAttributes);
+		$this->arrangeFormOrder();
 	}
 
 	/**
@@ -111,6 +112,16 @@ class FormBuilder implements MessageProviderInterface {
 	public function renderForm() {
 
 		return View::make($this->template, $this->getFormData())->render();
+	}
+
+	/**
+	 * Render the form if outputting this class
+	 *
+	 * @return mixed
+	 */
+	public function __toString() {
+
+		return $this->renderForm();
 	}
 
 	/**
@@ -230,13 +241,15 @@ class FormBuilder implements MessageProviderInterface {
 	}
 
 	/**
-	 * Render the form if outputting this class
-	 *
-	 * @return mixed
+	 * Arrange the order of the resources so they mirror the order in the resources
+	 * config.
 	 */
-	public function __toString() {
+	private function arrangeFormOrder() {
 
-		return $this->renderForm();
+		$resourceKeysOrdered = new Collection(array_only(Resource::getResourceMap(), $this->resources->keys()));
+
+		$this->resources = $resourceKeysOrdered->merge($this->resources);
+
 	}
 
 }
