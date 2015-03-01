@@ -32,7 +32,8 @@ class ResourceValidator implements MessageProviderInterface {
 	public function __construct($resources) {
 
 		$this->errors = [];
-		$this->resources = $this->loadResourcesWithDescriptors($resources);
+		$this->resources = $resources;
+		$this->loadResourcesWithDescriptors($resources);
 	}
 
 
