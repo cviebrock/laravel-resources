@@ -113,7 +113,7 @@ class ResourceValidator implements MessageProviderInterface {
 	 */
 	protected function runValidation() {
 
-		$validation = Validator::make($this->validation, $this->validateCollection);
+		$validation = Validator::make($this->validation, $this->resources);
 
 		if ($invalid = $validation->fails()) {
 			$this->errors = $validation->errors();
