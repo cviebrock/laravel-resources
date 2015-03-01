@@ -4,6 +4,7 @@ use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
 use Cviebrock\LaravelResources\Traits\ResourceDescriptorLoader;
 use Illuminate\Support\Contracts\MessageProviderInterface;
 use Illuminate\Support\MessageBag;
+use Validator;
 
 class ResourceValidator implements MessageProviderInterface {
 
