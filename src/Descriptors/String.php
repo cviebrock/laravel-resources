@@ -6,5 +6,6 @@ use Cviebrock\LaravelResources\Descriptor;
 
 abstract class String extends Descriptor {
 
+	protected $template = 'resources::formInput.string';
 
 }
