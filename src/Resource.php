@@ -45,8 +45,6 @@ class Resource {
 	public function __construct(CacheManager $cache) {
 
 		$this->cache = $cache;
-		$this->setLocale(Config::get('app.locale', 'en'));
-		$this->resourceMap = array_dot(Config::get('resources::resources'));
 	}
 
 
@@ -60,19 +58,15 @@ class Resource {
 
 		$this->setLocale($locale);
 
-		//		if ($this->descriptor) {
-		//			$this->descriptor->setLocale($locale);
-		//		}
-
 		return $this;
 	}
 
 
 	/**
-	 * Get the resource value.
+	 * Get the resource value by key.
 	 *
 	 * @param null $key
-	 * @return null
+	 * @return mixed|null
 	 * @throws ResourceNotDefinedException
 	 */
 	public function get($key = null) {
@@ -80,6 +74,33 @@ class Resource {
 		if ($key) {
 			$this->key($key);
 		}
+
+		return $this->getValue();
+	}
+
+
+	/**
+	 * Define the resource key, which loads the appropriate descriptor class.
+	 *
+	 * @param string $key
+	 * @return $this
+	 */
+	public function key($key) {
+
+		$this->setKey($key);
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the value of the resource.
+	 *
+	 * @return mixed|null
+	 * @throws ResourceKeyNotSpecified
+	 * @throws ResourceNotDefinedException
+	 */
+	public function getValue() {
 
 		$value = null;
 
@@ -94,27 +115,6 @@ class Resource {
 		}
 
 		throw (new ResourceNotDefinedException)->setReference($this->getKey(), $this->getLocale());
-	}
-
-
-	/**
-	 * Define the resource key, which loads the appropriate descriptor class.
-	 *
-	 * @param string $key
-	 * @return $this
-	 * @throws ResourceDescriptorNotDefinedException
-	 */
-	public function key($key) {
-
-		if (!$class = array_get($this->resourceMap, $key)) {
-			throw (new ResourceDescriptorNotDefinedException)->setKey($key);
-		}
-
-		$this->descriptor = new $class($key);
-
-		$this->setKey($key);
-
-		return $this;
 	}
 
 
@@ -166,8 +166,12 @@ class Resource {
 	 * Get the current key for the resource.
 	 *
 	 * @return string
+	 * @throws ResourceKeyNotSpecified
 	 */
 	public function getKey() {
+		if (!$this->key) {
+			throw new ResourceKeyNotSpecified;
+		}
 
 		return $this->key;
 	}
@@ -185,11 +189,14 @@ class Resource {
 
 
 	/**
-	 * Get the current locale for the resource.
+	 * Get the current locale for the resource, or load from config.
 	 *
 	 * @return string
 	 */
 	public function getLocale() {
+		if (!$this->locale) {
+			$this->locale = Config::get('app.locale', 'en');
+		}
 
 		return $this->locale;
 	}
@@ -339,7 +346,7 @@ class Resource {
 		if (!$record) {
 			$record = ResourceModel::create([
 				'key' => $this->getKey(),
-				'resource_class' => get_class($this->descriptor),
+				'resource_class' => get_class($this->getDescriptor()),
 			]);
 		}
 
@@ -362,18 +369,39 @@ class Resource {
 
 
 	/**
+	 * Get the resource descriptor class.
+	 *
 	 * @return Descriptor
+	 * @throws ResourceDescriptorNotDefinedException
 	 */
 	public function getDescriptor() {
+
+		if (!$this->descriptor) {
+			if (!$class = $this->getDescriptorClass()) {
+				throw (new ResourceDescriptorNotDefinedException)->setKey($this->getKey());
+			}
+
+			$this->descriptor = new $class($this->getKey());
+		}
 
 		return $this->descriptor;
 	}
 
 
+	protected function getDescriptorClass() {
+		return array_get($this->getResourceMap(), $this->getKey(), null);
+	}
+
+
 	/**
+	 * Get the resource map, or load from config.
+	 *
 	 * @return array
 	 */
 	public function getResourceMap() {
+		if (!$this->resourceMap) {
+			$this->resourceMap = array_dot(Config::get('resources::resources'));
+		}
 
 		return $this->resourceMap;
 	}
