@@ -8,7 +8,7 @@ class Resource extends Model {
 
 	protected $primaryKey = 'resource_id';
 
-	protected $fillable = ['key','resource_class'];
+	protected $fillable = ['key', 'resource_class'];
 
 	protected $with = ['translations'];
 
@@ -28,6 +28,12 @@ class Resource extends Model {
 	}
 
 
+	/**
+	 * Find the first model with the given value for "key"
+	 *
+	 * @param $key string
+	 * @return mixed
+	 */
 	public static function firstByKey($key) {
 		return static::where('key', $key)->first();
 	}
@@ -42,8 +48,9 @@ class Resource extends Model {
 		return $this->hasMany('Cviebrock\LaravelResources\Models\ResourceTranslation');
 	}
 
+
 	public function findTranslation($locale) {
-		return $this->translations->first(function($idx, $item) use ($locale) {
+		return $this->translations->first(function ($idx, $item) use ($locale) {
 			return $item->locale === $locale;
 		});
 	}

@@ -1,5 +1,6 @@
 <?php namespace Cviebrock\LaravelResources;
 
+use Config;
 use Illuminate\Support\Collection;
 
 
