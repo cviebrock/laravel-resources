@@ -36,6 +36,11 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	protected $template = '';
 
+	/**
+	 * @var array
+	 */
+	protected $validation = [];
+
 
 	public function __construct($key) {
 
@@ -108,6 +113,8 @@ abstract class Descriptor implements ResourceDescriptor {
 		if (!$this->name) {
 			throw (new ResourceDescriptorNameNotDefinedException)->setReference(get_called_class());
 		}
+
+		return $this->name;
 	}
 
 	/**
@@ -142,6 +149,6 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	public function validate() {
 
-		return [];
+		return $this->validation;
 	}
 }
