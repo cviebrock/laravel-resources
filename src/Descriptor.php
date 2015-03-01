@@ -134,10 +134,15 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	protected function getInputData() {
 
+		// Group by top level key
+		$keys = explode('.', $this->key);
+		$groupKey = array_shift($keys);
+		$key = $keys ? implode('.', $keys) : '';
+
 		return [
 			'label' => $this->getName(),
 			'id' => $this->key,
-			'name' => $this->key,
+			'name' => $key ? "{$groupKey}[{$key}]" : $this->key,
 			'value' => $this->getValue()
 		];
 	}
