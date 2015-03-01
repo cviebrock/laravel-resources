@@ -40,6 +40,12 @@ class FormBuilder implements MessageProviderInterface {
 	protected $method;
 
 	/**
+	 * @var array
+	 */
+	protected $validateCollection = [];
+
+
+	/**
 	 * @var string
 	 */
 	protected $action;
@@ -70,7 +76,11 @@ class FormBuilder implements MessageProviderInterface {
 	 */
 	public function errors() {
 
-		return new MessageBag($this->errors);
+		if ($this->errors instanceof MessageBag) {
+			return $this->errors;
+		}
+
+		return $this->errors = new MessageBag($this->errors);
 	}
 
 	/**
@@ -115,6 +125,16 @@ class FormBuilder implements MessageProviderInterface {
 	}
 
 	/**
+	 * Perform validation on the values passed in.
+	 *
+	 * @param $resources
+	 */
+	public function validate($resources) {
+
+		$this->validateCollection = $resources;
+	}
+
+	/**
 	 * Render the form if outputting this class
 	 *
 	 * @return mixed
@@ -129,10 +149,10 @@ class FormBuilder implements MessageProviderInterface {
 	 */
 	protected function runValidation() {
 
-		$validation = Validator::make($this->validation);
+		$validation = Validator::make($this->validation, $this->validateCollection);
 
 		if ($invalid = $validation->fails()) {
-			$this->addMessageResponse($validation, true);
+			$this->errors = $validation->messages->getMessageBag();
 		}
 
 		return !$invalid;
