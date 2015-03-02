@@ -51,7 +51,7 @@ class ResourceGroup {
 
 		$locale = $this->getLocale();
 
-		foreach ($resourceKeys as $key) {
+		foreach (array_reverse($resourceKeys) as $key) {
 			$results->put($key, app()->make('resources.resource')
 				->locale($locale)
 				->key($key)

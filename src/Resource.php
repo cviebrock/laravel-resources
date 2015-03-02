@@ -406,4 +406,9 @@ class Resource {
 		return $this->resourceMap;
 	}
 
+	public function renderInput() {
+		return $this->getDescriptor()->renderInput($this->getValue());
+	}
+
+
 }

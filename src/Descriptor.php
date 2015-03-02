@@ -129,9 +129,12 @@ abstract class Descriptor implements ResourceDescriptor {
 	 *
 	 * @return mixed
 	 */
-	public function renderInput() {
+	public function renderInput($value) {
 
-		return View::make($this->template, $this->getInputData())->render();
+		$data = $this->getInputData();
+		$data['value'] = $value;
+
+		return View::make($this->template, $data)->render();
 	}
 
 
@@ -142,16 +145,11 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	protected function getInputData() {
 
-		// Group by top level key
-		$keys = explode('.', $this->key);
-		$groupKey = array_shift($keys);
-		$key = $keys ? implode('.', $keys) : '';
-
 		return [
 			'label' => $this->getName(),
 			'id' => $this->key,
-			'name' => $key ? "resources[{$groupKey}][{$key}]" : "resources[$this->key]",
-			'value' => $this->getValue()
+			'name' => 'resources[' . $this->key . ']',
+//			'value' => $this->getValue()
 		];
 	}
 
