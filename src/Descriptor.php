@@ -1,10 +1,16 @@
 <?php namespace Cviebrock\LaravelResources;
 
 use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
+use Input;
 use View;
 
 
 abstract class Descriptor implements ResourceDescriptor {
+
+	/**
+	 * @var string
+	 */
+	protected $prefix = 'resources';
 
 	/**
 	 * @var string
@@ -40,6 +46,11 @@ abstract class Descriptor implements ResourceDescriptor {
 	 * @var array
 	 */
 	protected $validation = '';
+
+	/**
+	 * @var array
+	 */
+	private $sessionValues;
 
 
 	/**
@@ -142,16 +153,11 @@ abstract class Descriptor implements ResourceDescriptor {
 	 */
 	protected function getInputData() {
 
-		// Group by top level key
-		$keys = explode('.', $this->key);
-		$groupKey = array_shift($keys);
-		$key = $keys ? implode('.', $keys) : '';
-
 		return [
 			'label' => $this->getName(),
 			'id' => $this->key,
-			'name' => $key ? "resources[{$groupKey}][{$key}]" : "resources[$this->key]",
-			'value' => $this->getValue()
+			'name' => $this->getInputName(),
+			'value' => $this->getInputValue()
 		];
 	}
 
@@ -164,6 +170,63 @@ abstract class Descriptor implements ResourceDescriptor {
 	public function validate() {
 
 		return $this->validation;
+	}
+
+
+	/**
+	 * Get the form input name
+	 *
+	 * @return array
+	 */
+	protected function getInputName() {
+
+		// Group by top level key
+		$keys = explode('.', $this->key);
+		$groupKey = array_shift($keys);
+		$key = $keys ? implode('.', $keys) : '';
+
+		return $key ? "{$this->prefix}[{$groupKey}][{$key}]" : "{$this->prefix}[$this->key]";
+	}
+
+
+	/**
+	 * Get the resource key prefixed by the descriptor's prefix
+	 *
+	 * @return string
+	 */
+	protected function getPrefixedKey() {
+
+		return "{$this->prefix}.{$this->key}";
+	}
+
+
+	/**
+	 * Get the value from the request if it existed due to validation error.
+	 *
+	 * @return mixed
+	 */
+	protected function getInputValue() {
+
+		if($oldValue = $this->getSessionValue()) {
+			return $oldValue;
+		}
+
+		return $this->getValue();
+	}
+
+
+	/**
+	 * Get the current resource value from old session inputs
+	 *
+	 * @return mixed
+	 */
+	protected function getSessionValue() {
+
+		if(!$this->sessionValues) {
+			$this->sessionValues = array_dot(Input::old());
+		}
+
+		return array_get($this->sessionValues, $this->getPrefixedKey());
 	}
 
 }
