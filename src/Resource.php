@@ -184,6 +184,9 @@ class Resource {
 	 */
 	public function setKey($key) {
 
+		// Changing keys requires a reset of the descriptor context
+		$this->resetDescriptorContext($key);
+
 		$this->key = $key;
 	}
 
@@ -388,6 +391,12 @@ class Resource {
 	}
 
 
+	/**
+	 * Retrieve the descriptor for the resource.
+	 *
+	 * @return mixed
+	 * @throws ResourceKeyNotSpecified
+	 */
 	protected function getDescriptorClass() {
 		return array_get($this->getResourceMap(), $this->getKey(), null);
 	}
@@ -404,6 +413,19 @@ class Resource {
 		}
 
 		return $this->resourceMap;
+	}
+
+
+	/**
+	 * Ensure the descriptor is retrieved properly whenever the resource key changes.
+	 *
+	 * @param $key
+	 */
+	private function resetDescriptorContext($key) {
+
+		if($this->key && $key !== $this->key) {
+			$this->descriptor = null;
+		}
 	}
 
 }
