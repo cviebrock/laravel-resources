@@ -63,23 +63,6 @@ class Resource {
 
 
 	/**
-	 * Get the resource value by key.
-	 *
-	 * @param null $key
-	 * @return mixed|null
-	 * @throws ResourceNotDefinedException
-	 */
-	public function get($key = null) {
-
-		if ($key) {
-			$this->key($key);
-		}
-
-		return $this->getValue();
-	}
-
-
-	/**
 	 * Define the resource key, which loads the appropriate descriptor class.
 	 *
 	 * @param string $key
@@ -90,6 +73,23 @@ class Resource {
 		$this->setKey($key);
 
 		return $this;
+	}
+
+
+	/**
+	 * Get the resource value by key.
+	 *
+	 * @param null $key
+	 * @return mixed|null
+	 * @throws ResourceNotDefinedException
+	 */
+	public function get($key = null) {
+
+		if ($key) {
+			$this->setKey($key);
+		}
+
+		return $this->getValue();
 	}
 
 
@@ -190,6 +190,7 @@ class Resource {
 	public function setKey($key) {
 
 		$this->key = $key;
+		$this->clearDescriptor();
 	}
 
 
@@ -208,13 +209,16 @@ class Resource {
 
 
 	/**
-	 * Set resource local.
+	 * Set resource locale.
 	 *
 	 * @param string $locale
+	 * @return $this
 	 */
 	public function setLocale($locale) {
 
 		$this->locale = $locale;
+		$this->clearDescriptor();
+
 	}
 
 
@@ -387,7 +391,7 @@ class Resource {
 				throw (new ResourceDescriptorNotDefinedException)->setKey($this->getKey());
 			}
 
-			$this->descriptor = new $class($this->getKey());
+			$this->descriptor = new $class($this->getKey(), $this->getLocale());
 		}
 
 		return $this->descriptor;
@@ -417,4 +421,7 @@ class Resource {
 	}
 
 
+	private function clearDescriptor() {
+		$this->descriptor = null;
+	}
 }

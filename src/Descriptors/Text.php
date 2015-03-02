@@ -1,8 +1,7 @@
 <?php namespace Cviebrock\LaravelResources\Descriptors;
 
-
 use Cviebrock\LaravelResources\Descriptor;
-use Cviebrock\LaravelResources\Descriptors\Storage\PlainStorage;
+use Cviebrock\LaravelResources\Traits\PlainStorage;
 
 
 abstract class Text extends Descriptor {

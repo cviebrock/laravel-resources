@@ -6,13 +6,13 @@ use Cviebrock\LaravelResources\Traits\ChooseableDescriptor;
 use Cviebrock\LaravelResources\Traits\SerializedStorage;
 
 
-abstract class ChooseMany extends Descriptor {
+abstract class ChooseOne extends Descriptor {
 
 	use SerializedStorage;
 	use ChooseableDescriptor;
 
 
-	protected $template = 'resources::inputs.checkboxes';
+	protected $template = 'resources::inputs.radios';
 
 	protected $choiceValues;
 

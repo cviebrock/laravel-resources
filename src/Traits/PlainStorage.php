@@ -1,6 +1,6 @@
-<?php namespace Cviebrock\LaravelResources\Descriptors\Storage;
+<?php namespace Cviebrock\LaravelResources\Traits;
 
-trait SerializedStorage {
+trait PlainStorage {
 
 	/**
 	 * Transform the native value into a format suitable for storage.
@@ -10,7 +10,7 @@ trait SerializedStorage {
 	 */
 	public function toStore($value) {
 
-		return serialize($value);
+		return $value;
 	}
 
 
@@ -22,6 +22,6 @@ trait SerializedStorage {
 	 */
 	public function fromStore($value) {
 
-		return unserialize($value);
+		return $value;
 	}
 }

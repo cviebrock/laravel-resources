@@ -30,6 +30,11 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	/**
 	 * @var
 	 */
+	protected $locale;
+
+	/**
+	 * @var
+	 */
 	protected $value;
 
 	/**
@@ -46,18 +51,10 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	/**
 	 * @param $key
 	 */
-	public function __construct($key) {
+	public function __construct($key, $locale) {
 
 		$this->key = $key;
-	}
-
-
-	/**
-	 * @param $value
-	 */
-	public function setValue($value) {
-
-		$this->value = $value;
+		$this->locale = $locale;
 	}
 
 
@@ -67,6 +64,15 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	public function getValue() {
 
 		return $this->value;
+	}
+
+
+	/**
+	 * @param $value
+	 */
+	public function setValue($value) {
+
+		$this->value = $value;
 	}
 
 
@@ -89,21 +95,9 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
-	 * @return mixed
-	 */
-	public function getName() {
-
-		if (!$this->name) {
-			throw (new ResourceDescriptorNameNotDefinedException)->setReference(get_called_class());
-		}
-
-		return $this->name;
-	}
-
-
-	/**
 	 * Render the descriptor as a form input
 	 *
+	 * @param mixed $value
 	 * @return mixed
 	 */
 	public function renderInput($value) {
@@ -126,8 +120,20 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 			'label' => $this->getName(),
 			'id' => $this->key,
 			'name' => 'resources[' . $this->key . ']',
-//			'value' => $this->getValue()
 		];
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getName() {
+
+		if (!$this->name) {
+			throw (new ResourceDescriptorNameNotDefinedException)->setReference(get_called_class());
+		}
+
+		return $this->name;
 	}
 
 
@@ -139,6 +145,14 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	public function validate() {
 
 		return $this->validation;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getLocale() {
+		return $this->locale;
 	}
 
 }
