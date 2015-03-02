@@ -37,9 +37,10 @@ interface ResourceDescriptor {
 
 
 	/**
-	 * Validation criteria for this resource
+	 * Validate new value for this resource
 	 *
-	 * @return mixed
+	 * @param $value mixed
+	 * @return bool|MessageBag
 	 */
-	public function validate();
+	public function validate($value);
 }

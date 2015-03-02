@@ -34,6 +34,7 @@ class ServiceProvider extends BaseProvider {
 	public function register() {
 		$this->registerResource();
 		$this->registerResourceGroup();
+		$this->registerResourceForm();
 		$this->registerCommands();
 	}
 
@@ -50,9 +51,7 @@ class ServiceProvider extends BaseProvider {
 				throw new InvalidCacheDriverException;
 			}
 
-			return new Resource(
-				$cache
-			);
+			return new Resource($cache);
 		});
 	}
 
@@ -60,8 +59,7 @@ class ServiceProvider extends BaseProvider {
 	/**
 	 * Register the ResourceGroup
 	 */
-	private
-	function registerResourceGroup() {
+	private function registerResourceGroup() {
 		$this->app->bind('resources.group', function ($app) {
 
 			return new ResourceGroup();
@@ -70,10 +68,20 @@ class ServiceProvider extends BaseProvider {
 
 
 	/**
+	 * Register the ResourceForm
+	 */
+	private function registerResourceForm() {
+		$this->app->bind('resources.form', function ($app) {
+
+			return new ResourceForm();
+		});
+	}
+
+
+	/**
 	 * Register the Commands
 	 */
-	private
-	function registerCommands() {
+	private function registerCommands() {
 		$this->app['resources.command.table'] = $this->app->share(function ($app) {
 			return new TableCommand();
 		});
@@ -93,11 +101,11 @@ class ServiceProvider extends BaseProvider {
 	 *
 	 * @return array
 	 */
-	public
-	function provides() {
+	public function provides() {
 		return [
 			'resources.resource',
 			'resources.group',
+			'resources.form',
 			'resources.command.table',
 			'resources.command.populate'
 		];

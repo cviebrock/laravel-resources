@@ -43,13 +43,25 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	protected $template = '';
 
 	/**
+	 * Default validation rules.
+	 *
 	 * @var array
 	 */
-	protected $validation = '';
+	protected $validationRules = [ 'required' ];
+
+	/**
+	 * Default validation messages.
+	 *
+	 * @var array
+	 */
+	protected $validationMessages = [];
 
 
 	/**
-	 * @param $key
+	 * Constructor.
+	 *
+	 * @param $key string
+	 * @param $locale string
 	 */
 	public function __construct($key, $locale) {
 
@@ -138,13 +150,50 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
-	 * Base validation criteria
+	 * Validate value against rules.
 	 *
+	 * @param $value
+	 * @return bool|MessageBag
+	 */
+	public function validate($value) {
+
+		$key = $this->getKey();
+
+		$validator = app('validator')->make(
+			[$key => $value],
+			[$key => $this->getValidationRules()],
+			[$this->getValidationMessages()]
+		);
+
+		if ($validator->passes()) {
+			return true;
+		}
+
+		return $validator->messages();
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getKey() {
+		return $this->key;
+	}
+
+
+	/**
 	 * @return array
 	 */
-	public function validate() {
+	public function getValidationRules() {
+		return $this->validationRules;
+	}
 
-		return $this->validation;
+
+	/**
+	 * @return array
+	 */
+	public function getValidationMessages() {
+		return $this->validationMessages;
 	}
 
 
@@ -154,5 +203,4 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	public function getLocale() {
 		return $this->locale;
 	}
-
 }

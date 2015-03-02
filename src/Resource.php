@@ -424,4 +424,9 @@ class Resource {
 	private function clearDescriptor() {
 		$this->descriptor = null;
 	}
+
+	public function validate($value) {
+		return $this->getDescriptor()->validate($value);
+	}
+
 }
