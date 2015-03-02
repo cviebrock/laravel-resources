@@ -7,6 +7,7 @@ use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
 use Cviebrock\LaravelResources\Models\Resource as ResourceModel;
 use Cviebrock\LaravelResources\Models\ResourceTranslation;
 use Illuminate\Cache\CacheManager;
+use Input;
 
 
 class Resource {
@@ -57,20 +58,6 @@ class Resource {
 	public function locale($locale) {
 
 		$this->setLocale($locale);
-
-		return $this;
-	}
-
-
-	/**
-	 * Define the resource key, which loads the appropriate descriptor class.
-	 *
-	 * @param string $key
-	 * @return $this
-	 */
-	public function key($key) {
-
-		$this->setKey($key);
 
 		return $this;
 	}
@@ -218,7 +205,6 @@ class Resource {
 
 		$this->locale = $locale;
 		$this->clearDescriptor();
-
 	}
 
 
@@ -273,6 +259,26 @@ class Resource {
 
 
 	/**
+	 * Get the resource descriptor class.
+	 *
+	 * @return Descriptor
+	 * @throws ResourceDescriptorNotDefinedException
+	 */
+	public function getDescriptor() {
+
+		if (!$this->descriptor) {
+			if (!$class = $this->getDescriptorClass()) {
+				throw (new ResourceDescriptorNotDefinedException)->setKey($this->getKey());
+			}
+
+			$this->descriptor = new $class($this->getKey(), $this->getLocale());
+		}
+
+		return $this->descriptor;
+	}
+
+
+	/**
 	 * Load the translation model for a given key and locale
 	 *
 	 * @param $key
@@ -309,6 +315,11 @@ class Resource {
 	}
 
 
+	protected function getDescriptorClass() {
+		return array_get($this->getResourceMap(), $this->getKey(), null);
+	}
+
+
 	/**
 	 * Load the resource model for a given key.
 	 *
@@ -321,6 +332,20 @@ class Resource {
 	}
 
 
+	/**
+	 * Get the resource map, or load from config.
+	 *
+	 * @return array
+	 */
+	public function getResourceMap() {
+		if (!$this->resourceMap) {
+			$this->resourceMap = array_dot(Config::get('resources::resources'));
+		}
+
+		return $this->resourceMap;
+	}
+
+
 	public function getFromDB($key = null) {
 
 		if ($key) {
@@ -328,6 +353,20 @@ class Resource {
 		}
 
 		return $this->loadValueFromDatabase();
+	}
+
+
+	/**
+	 * Define the resource key, which loads the appropriate descriptor class.
+	 *
+	 * @param string $key
+	 * @return $this
+	 */
+	public function key($key) {
+
+		$this->setKey($key);
+
+		return $this;
 	}
 
 
@@ -378,55 +417,21 @@ class Resource {
 	}
 
 
-	/**
-	 * Get the resource descriptor class.
-	 *
-	 * @return Descriptor
-	 * @throws ResourceDescriptorNotDefinedException
-	 */
-	public function getDescriptor() {
-
-		if (!$this->descriptor) {
-			if (!$class = $this->getDescriptorClass()) {
-				throw (new ResourceDescriptorNotDefinedException)->setKey($this->getKey());
-			}
-
-			$this->descriptor = new $class($this->getKey(), $this->getLocale());
-		}
-
-		return $this->descriptor;
-	}
-
-
-	protected function getDescriptorClass() {
-		return array_get($this->getResourceMap(), $this->getKey(), null);
-	}
-
-
-	/**
-	 * Get the resource map, or load from config.
-	 *
-	 * @return array
-	 */
-	public function getResourceMap() {
-		if (!$this->resourceMap) {
-			$this->resourceMap = array_dot(Config::get('resources::resources'));
-		}
-
-		return $this->resourceMap;
-	}
-
 	public function renderInput() {
-		return $this->getDescriptor()->renderInput($this->getValue());
+
+		$value = array_get(Input::old('resources'), $this->getKey(), $this->getValue());
+
+		return $this->getDescriptor()->renderInput($value);
+	}
+
+
+	public function validate($value) {
+		return $this->getDescriptor()->validate($value);
 	}
 
 
 	private function clearDescriptor() {
 		$this->descriptor = null;
-	}
-
-	public function validate($value) {
-		return $this->getDescriptor()->validate($value);
 	}
 
 }
