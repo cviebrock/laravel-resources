@@ -28,30 +28,13 @@ interface ResourceDescriptor {
 
 
 	/**
-	 * Transform the native value into a format suitable for storage.
-	 *
-	 * @param $value mixed
-	 * @return string
-	 */
-	public function toStorage($value);
-
-
-	/**
-	 * Transform the value from the stored value to a native value.
-	 *
-	 * @param $value string
-	 * @return mixed
-	 */
-	public function fromStorage($value);
-
-
-	/**
 	 * Render value as a form input
 	 *
 	 * @param $value string  The value to pass to the input field
 	 * @return mixed
 	 */
 	public function renderInput($value);
+
 
 	/**
 	 * Validation criteria for this resource

@@ -128,7 +128,9 @@ class Resource {
 		$cacheKey = $this->getLocalizedCacheKey();
 		$tags = $this->buildCacheTags($cacheKey);
 
-		return $this->cache->tags($tags)->get($cacheKey);
+		$value = $this->cache->tags($tags)->get($cacheKey);
+
+		return $this->getDescriptor()->fromStore($value);
 	}
 
 
@@ -143,7 +145,9 @@ class Resource {
 			return null;
 		}
 
-		return $translation->getAttribute('value');
+		$value = $translation->getAttribute('value');
+
+		return $this->getDescriptor()->fromStore($value);
 	}
 
 
@@ -157,8 +161,9 @@ class Resource {
 
 		$cacheKey = $this->getLocalizedCacheKey();
 		$tags = $this->buildCacheTags($cacheKey);
+		$storedValue = $this->getDescriptor()->toStore($value);
 
-		return $this->cache->tags($tags)->forever($cacheKey, $value);
+		return $this->cache->tags($tags)->forever($cacheKey, $storedValue);
 	}
 
 
@@ -332,14 +337,14 @@ class Resource {
 
 	public function setValue($value) {
 
-		$this->saveValueToDatabase($value);
+		$this->storeValueToDatabase($value);
 		$this->storeValueToCache($value);
 
 		return $this;
 	}
 
 
-	protected function saveValueToDatabase($value) {
+	protected function storeValueToDatabase($value) {
 
 		$record = $this->findResourceModel($this->getKey());
 
@@ -351,15 +356,16 @@ class Resource {
 		}
 
 		$translation = $this->findTranslationModel($this->getKey(), $this->getLocale());
+		$storedValue = $this->getDescriptor()->toStore($value);
 
 		if ($translation) {
 			$translation->update([
-				'value' => $value
+				'value' => $storedValue
 			]);
 		} else {
 			$translation = new ResourceTranslation([
 				'locale' => $this->getLocale(),
-				'value' => $value
+				'value' => $storedValue
 			]);
 			$record->translations()->save($translation);
 		}

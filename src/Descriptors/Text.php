@@ -2,9 +2,12 @@
 
 
 use Cviebrock\LaravelResources\Descriptor;
+use Cviebrock\LaravelResources\Descriptors\Storage\PlainStorage;
 
 
 abstract class Text extends Descriptor {
+
+	use PlainStorage;
 
 	protected $template = 'resources::inputs.textarea';
 
