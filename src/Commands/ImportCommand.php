@@ -31,26 +31,23 @@ class ImportCommand extends Command {
 		$force = $this->option('force');
 		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
 
-		$manager = $this->laravel['resources.resource'];
-
 		$allResources = array_dot(Config::get('resources::resources', []));
 
 		foreach ($allResources as $key => $descriptorClass) {
 
-			$resource = $manager->key($key);
+			$resource = $this->laravel['resources.resource']->key($key);
 
 			foreach ($resource->getDescriptor()->getSeedValues() as $locale => $value) {
 
 				$resource->locale($locale);
 
 				try {
-					$existingValue = $resource->getFromDB();
+					$exists = ( $resource->getFromDB() !== null );
 				} catch (ResourceNotDefinedException $e) {
-					// resource hasn't been created ... that's okay, just force a save
-					$existingValue = !$value;
+					$exists = false;
 				}
 
-				if ($force || $existingValue !== $value) {
+				if ($force || !$exists) {
 					$resource->setValue($value);
 					$this->comment('Settting key [' . $resource->getLocalizedKey() . ']');
 				} else {
