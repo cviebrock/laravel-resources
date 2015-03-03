@@ -200,7 +200,7 @@ class ResourceGroup implements ArrayableInterface, ArrayAccess, Countable, Itera
 	}
 
 
-	public function save($input) {
+	public function setValues($input) {
 		$keys = array_keys($input);
 		$resources = static::getByKeys($keys);
 

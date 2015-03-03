@@ -8,11 +8,13 @@ trait ChooseableDescriptor {
 	/**
 	 * Add choice options to form input data.
 	 *
+	 * @param $value
 	 * @return array
+	 * @throws ResourceDescriptorChoicesNotDefinedException
 	 */
-	protected function getInputData() {
+	protected function getInputData($value) {
 
-		$data = parent::getInputData();
+		$data = parent::getInputData($value);
 
 		$data['choices'] = $this->getChoices();
 

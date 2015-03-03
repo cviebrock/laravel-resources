@@ -2,7 +2,7 @@
 
 use Config;
 use Cviebrock\LaravelResources\Exceptions\ResourceDescriptorNotDefinedException;
-use Cviebrock\LaravelResources\Exceptions\ResourceKeyNotSpecified;
+use Cviebrock\LaravelResources\Exceptions\ResourceKeyNotSpecifiedException;
 use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
 use Cviebrock\LaravelResources\Models\Resource as ResourceModel;
 use Cviebrock\LaravelResources\Models\ResourceTranslation;
@@ -84,7 +84,7 @@ class Resource {
 	 * Get the value of the resource.
 	 *
 	 * @return mixed|null
-	 * @throws ResourceKeyNotSpecified
+	 * @throws ResourceKeyNotSpecifiedException
 	 * @throws ResourceNotDefinedException
 	 */
 	public function getValue() {
@@ -158,11 +158,11 @@ class Resource {
 	 * Get the current key for the resource.
 	 *
 	 * @return string
-	 * @throws ResourceKeyNotSpecified
+	 * @throws ResourceKeyNotSpecifiedException
 	 */
 	public function getKey() {
 		if (!$this->key) {
-			throw new ResourceKeyNotSpecified;
+			throw new ResourceKeyNotSpecifiedException;
 		}
 
 		return $this->key;
@@ -212,7 +212,7 @@ class Resource {
 	 * Build key used for cache storage/lookup.
 	 *
 	 * @return string
-	 * @throws ResourceKeyNotSpecified
+	 * @throws ResourceKeyNotSpecifiedException
 	 */
 	protected function getLocalizedCacheKey() {
 
@@ -271,7 +271,9 @@ class Resource {
 				throw (new ResourceDescriptorNotDefinedException)->setKey($this->getKey());
 			}
 
-			$this->descriptor = new $class($this->getKey(), $this->getLocale());
+			$this->descriptor = app($class);
+			$this->descriptor->setKey($this->getKey());
+			$this->descriptor->setLocale($this->getLocale());
 		}
 
 		return $this->descriptor;
@@ -303,12 +305,12 @@ class Resource {
 	 * Build the localized key for the resource (locale + key)
 	 *
 	 * @return string
-	 * @throws ResourceKeyNotSpecified
+	 * @throws ResourceKeyNotSpecifiedException
 	 */
 	public function getLocalizedKey() {
 
 		if (!$this->key) {
-			throw new ResourceKeyNotSpecified;
+			throw new ResourceKeyNotSpecifiedException;
 		}
 
 		return $this->locale . '.' . $this->key;

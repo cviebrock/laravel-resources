@@ -1,5 +1,7 @@
-<div class="form-group">
-	{{ $label }}
+@extends('resources::base.bootstrap')
+
+@section('input.content')
+	<label>{{ $label }}</label>
 	@foreach( $choices as $_key => $_choice )
 		<div class="radio">
 			<label>
@@ -12,4 +14,4 @@
 			</label>
 		</div>
 	@endforeach
-</div>
+@overwrite

@@ -1,6 +1,6 @@
 <?php namespace Cviebrock\LaravelResources\Contracts;
 
-interface ResourceStorage {
+interface StorageInterface {
 
 	/**
 	 * Transform the native value into a format suitable for storage.

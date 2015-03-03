@@ -1,11 +1,18 @@
 <?php namespace Cviebrock\LaravelResources;
 
-use Cviebrock\LaravelResources\Contracts\ResourceDescriptor;
-use Cviebrock\LaravelResources\Contracts\ResourceStorage;
+use Config;
+use Cviebrock\LaravelResources\Contracts\DescriptorInterface;
+use Cviebrock\LaravelResources\Contracts\StorageInterface;
+use Illuminate\Validation\Factory as Validator;
 use View;
 
 
-abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
+abstract class Descriptor implements DescriptorInterface, StorageInterface {
+
+	/**
+	 * @var Validator
+	 */
+	protected $validator;
 
 	/**
 	 * @var string
@@ -47,7 +54,7 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	 *
 	 * @var array
 	 */
-	protected $validationRules = [ 'required' ];
+	protected $validationRules = ['required'];
 
 	/**
 	 * Default validation messages.
@@ -60,17 +67,17 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 	/**
 	 * Constructor.
 	 *
-	 * @param $key string
-	 * @param $locale string
+	 * @param Validator $validator
 	 */
-	public function __construct($key, $locale) {
+	public function __construct(Validator $validator) {
 
-		$this->key = $key;
-		$this->locale = $locale;
+		$this->validator = $validator;
 	}
 
 
 	/**
+	 * Get the value of the resource descriptor.
+	 *
 	 * @return mixed
 	 */
 	public function getValue() {
@@ -80,7 +87,10 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
+	 * Set the value of the resource descriptor.
+	 *
 	 * @param $value
+	 * @return mixed|void
 	 */
 	public function setValue($value) {
 
@@ -107,36 +117,39 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
-	 * Render the descriptor as a form input
+	 * Render the descriptor as a form input.
 	 *
 	 * @param mixed $value
 	 * @return mixed
 	 */
 	public function renderInput($value) {
 
-		$data = $this->getInputData();
-		$data['value'] = $value;
+		$data = $this->getInputData($value);
 
 		return View::make($this->template, $data)->render();
 	}
 
 
 	/**
-	 * Form input data used to render the descriptor as an input
-	 *
+	 * @param $value
 	 * @return array
 	 */
-	protected function getInputData() {
+	protected function getInputData($value) {
 
-		return [
+		$data = [
 			'label' => $this->getName(),
 			'id' => $this->key,
 			'name' => 'resources[' . $this->key . ']',
+			'value' => $value
 		];
+
+		return $data;
 	}
 
 
 	/**
+	 * Get the name for the resource.
+	 *
 	 * @return mixed
 	 */
 	public function getName() {
@@ -182,6 +195,16 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
+	 * Set the resource key.
+	 *
+	 * @param mixed $key
+	 */
+	public function setKey($key) {
+		$this->key = $key;
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function getValidationRules() {
@@ -198,9 +221,19 @@ abstract class Descriptor implements ResourceDescriptor, ResourceStorage {
 
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getLocale() {
 		return $this->locale;
+	}
+
+
+	/**
+	 * Set the resource locale.
+	 *
+	 * @param string $locale
+	 */
+	public function setLocale($locale) {
+		$this->locale = $locale;
 	}
 }

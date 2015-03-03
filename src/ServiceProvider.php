@@ -34,7 +34,6 @@ class ServiceProvider extends BaseProvider {
 	public function register() {
 		$this->registerResource();
 		$this->registerResourceGroup();
-		$this->registerResourceForm();
 		$this->registerCommands();
 	}
 
@@ -68,17 +67,6 @@ class ServiceProvider extends BaseProvider {
 
 
 	/**
-	 * Register the ResourceForm
-	 */
-	private function registerResourceForm() {
-		$this->app->bind('resources.form', function ($app) {
-
-			return new ResourceForm();
-		});
-	}
-
-
-	/**
 	 * Register the Commands
 	 */
 	private function registerCommands() {
@@ -105,7 +93,6 @@ class ServiceProvider extends BaseProvider {
 		return [
 			'resources.resource',
 			'resources.group',
-			'resources.form',
 			'resources.command.table',
 			'resources.command.populate'
 		];
