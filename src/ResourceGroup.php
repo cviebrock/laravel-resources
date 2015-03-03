@@ -175,15 +175,16 @@ class ResourceGroup implements ArrayableInterface, ArrayAccess, Countable, Itera
 	}
 
 
-	public function validator($input) {
+	public function validate($input) {
 
 		$rules = $messages = $niceNames = [];
-		$keys = array_keys($input);
 
-		$resources = static::getByKeys($keys);
+		if (!$this->getResources()) {
+			$this->getByKeys(array_keys($input));
+		}
 
-		foreach ($keys as $key) {
-			$descriptor = $resources->get($key)->getDescriptor();
+		foreach ($this->getResources() as $key=>$resource) {
+			$descriptor = $resource->getDescriptor();
 			if ($resourceRules = $descriptor->getValidationRules()) {
 				$rules[$key] = $resourceRules;
 			}
