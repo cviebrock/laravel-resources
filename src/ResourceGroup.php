@@ -204,8 +204,8 @@ class ResourceGroup implements ArrayableInterface, ArrayAccess, Countable, Itera
 		$keys = array_keys($input);
 		$resources = static::getByKeys($keys);
 
-		foreach ($resources as $resource) {
-
+		foreach ($resources as $key => $resource) {
+			$value = array_get($input, $key);
 			$resource->setValue($value);
 		}
 
