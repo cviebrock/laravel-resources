@@ -2,6 +2,7 @@
 
 use Config;
 use Cviebrock\LaravelResources\Exceptions\ResourceNotDefinedException;
+use Cviebrock\LaravelResources\Models\Resource;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -42,7 +43,7 @@ class ImportCommand extends Command {
 				$resource->locale($locale);
 
 				try {
-					$exists = ( $resource->getFromDB() !== null );
+					$exists = ($resource->getFromDB() !== null);
 				} catch (ResourceNotDefinedException $e) {
 					$exists = false;
 				}
@@ -55,7 +56,25 @@ class ImportCommand extends Command {
 				}
 			}
 		}
+
 		$this->info('Resources imported!');
+
+		if ($this->option('clear')) {
+			$this->info('Clearing undefined resources');
+			$keys = array_keys($allResources);
+			$unusedResources = Resource::whereNotIn('key', $keys)->get();
+
+			if ($unusedResources->count()) {
+				foreach ($unusedResources as $unusedResource) {
+					$key = $unusedResource->getAttribute('key');
+					$unusedResource->translations()->forceDelete();
+					$unusedResource->forceDelete();
+					$this->comment('Deleting resource [' . $key . ']');
+				}
+			} else {
+				$this->comment('No unused resources found.');
+			}
+		}
 	}
 
 
@@ -68,6 +87,7 @@ class ImportCommand extends Command {
 
 		return [
 			['force', '-f', InputOption::VALUE_NONE, 'Overwrite existing keys with data from configuration files.'],
+			['clear', '-c', InputOption::VALUE_NONE, 'Clear out unused keys from database (i.e. keys not defined in configuration files).'],
 		];
 	}
 }

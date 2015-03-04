@@ -137,9 +137,10 @@ abstract class Descriptor implements DescriptorInterface, StorageInterface {
 	protected function getInputData($value) {
 
 		$data = [
-			'label' => $this->getName(),
+			'name' => $this->getName(),
+			'description' => $this->getDescription(),
 			'id' => $this->key,
-			'name' => 'resources[' . $this->key . ']',
+			'fieldName' => 'resources[' . $this->key . ']',
 			'value' => $value
 		];
 

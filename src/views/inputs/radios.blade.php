@@ -1,11 +1,11 @@
 @extends('resources::base.bootstrap')
 
 @section('input.content')
-	<label>{{ $label }}</label>
+	<label>{{ $name }}</label>
 	@foreach( $choices as $_key => $_choice )
 		<div class="radio">
 			<label>
-				<input type="radio" value="{{ $_key }}" id="{{ $id }}--{{ $_key }}" name="{{ $name }}"
+				<input type="radio" value="{{ $_key }}" id="{{ $id }}--{{ $_key }}" name="{{ $fieldName }}"
 					@if($_key == $value)
 						checked="checked"
 					@endif

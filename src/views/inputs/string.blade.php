@@ -1,6 +1,6 @@
 @extends('resources::base.bootstrap')
 
 @section('input.content')
-  <label for="{{ $name }}">{{ $label }}</label>
-  <input class="form-control" id="{{ $id }}" name="{{ $name }}" type="text" value="{{ $value }}">
+  <label for="{{ $fieldName }}">{{ $name }}</label>
+  <input class="form-control" id="{{ $id }}" name="{{ $fieldName }}" type="text" value="{{ $value }}">
 @overwrite
