@@ -8,7 +8,7 @@ class Resource extends Model {
 
 	protected $primaryKey = 'resource_id';
 
-	protected $fillable = ['key', 'resource_class'];
+	protected $fillable = ['resource_key', 'resource_class'];
 
 	protected $with = ['translations'];
 
@@ -35,7 +35,7 @@ class Resource extends Model {
 	 * @return mixed
 	 */
 	public static function firstByKey($key) {
-		return static::where('key', $key)->first();
+		return static::where('resource_key', $key)->first();
 	}
 
 

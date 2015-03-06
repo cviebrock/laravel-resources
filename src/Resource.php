@@ -396,7 +396,7 @@ class Resource {
 
 		if (!$record) {
 			$record = ResourceModel::create([
-				'key' => $this->getKey(),
+				'resource_key' => $this->getKey(),
 				'resource_class' => get_class($this->getDescriptor()),
 			]);
 		}

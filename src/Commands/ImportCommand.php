@@ -62,11 +62,11 @@ class ImportCommand extends Command {
 		if ($this->option('clear')) {
 			$this->info('Clearing undefined resources');
 			$keys = array_keys($allResources);
-			$unusedResources = Resource::whereNotIn('key', $keys)->get();
+			$unusedResources = Resource::whereNotIn('resource_key', $keys)->get();
 
 			if ($unusedResources->count()) {
 				foreach ($unusedResources as $unusedResource) {
-					$key = $unusedResource->getAttribute('key');
+					$key = $unusedResource->getAttribute('resource_key');
 					$unusedResource->translations()->forceDelete();
 					$unusedResource->forceDelete();
 					$this->comment('Deleting resource [' . $key . ']');

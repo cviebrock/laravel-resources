@@ -14,12 +14,12 @@ class CreateResourcesTable extends Migration {
 	{
 		Schema::create('%PREFIX%resources', function(Blueprint $table){
 			$table->increments('resource_id');
-			$table->string('key');
+			$table->string('resource_key');
 			$table->string('resource_class');
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->unique('key');
+			$table->unique('resource_key','U_resource_key');
 		});
 	}
 
