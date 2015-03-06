@@ -19,7 +19,7 @@ class CreateResourcesTable extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->unique('resource_key','U_resource_key');
+			$table->unique('resource_key');
 		});
 	}
 

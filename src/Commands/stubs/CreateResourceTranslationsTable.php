@@ -21,7 +21,7 @@ class CreateResourceTranslationsTable extends Migration {
 			$table->softDeletes();
 
 			$table->index('locale');
-			$table->unique(['resource_id','locale'], 'U_resource_id_locale');
+			$table->unique(['resource_id','locale']);
 		});
 	}
 
