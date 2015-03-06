@@ -89,15 +89,16 @@ class Resource {
 	 */
 	public function getValue() {
 
-		$value = null;
+		$value = $this->loadValueFromCache();
 
-		if ($value = $this->loadValueFromCache()) {
+		if ($value !== null) {
 			return $value;
 		}
 
-		if ($value = $this->loadValueFromDatabase()) {
-			$this->storeValueToCache($value);
+		$value = $this->loadValueFromDatabase();
 
+		if ($value !== null) {
+			$this->storeValueToCache($value);
 			return $value;
 		}
 
