@@ -22,7 +22,8 @@ class ServiceProvider extends BaseProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->package('cviebrock/laravel-resources', 'resources', __DIR__);
+        $this->handleConfigs();
+        $this->handleViews();
 	}
 
 
@@ -97,4 +98,19 @@ class ServiceProvider extends BaseProvider {
 			'resources.command.populate'
 		];
 	}
+
+
+    private function handleConfigs() {
+
+    	$configPath = __DIR__ . '/../config/resources.php';
+    	$this->publishes([$configPath => config_path('resources.php')]);
+    	$this->mergeConfigFrom($configPath, 'resources');
+    }
+
+
+    private function handleViews() {
+
+    	$this->loadViewsFrom( __DIR__.'/../views', 'resources');
+    	$this->publishes([__DIR__.'/../views' => base_path('resources/views/vendor/resources')]);
+    }
 }
