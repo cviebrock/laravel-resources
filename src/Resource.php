@@ -218,7 +218,7 @@ class Resource {
 	protected function getLocalizedCacheKey() {
 
 		$cacheKey = $this->getLocalizedKey();
-		if ($cachePrefix = Config::get('resources::config.cachePrefix')) {
+		if ($cachePrefix = Config::get('resources.cachePrefix')) {
 			$cacheKey = $cachePrefix . '.' . $cacheKey;
 		}
 
@@ -342,7 +342,7 @@ class Resource {
 	 */
 	public function getResourceMap() {
 		if (!$this->resourceMap) {
-			$this->resourceMap = array_dot(Config::get('resources::resources'));
+			$this->resourceMap = array_dot(Config::get('resources.resources'));
 		}
 
 		return $this->resourceMap;

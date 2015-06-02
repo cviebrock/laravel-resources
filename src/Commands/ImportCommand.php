@@ -32,7 +32,7 @@ class ImportCommand extends Command {
 		$force = $this->option('force');
 		$this->info('Importing resources' . ($force ? ' (with force)' : ''));
 
-		$allResources = array_dot(Config::get('resources::resources', []));
+		$allResources = array_dot(Config::get('resources.resources', []));
 
 		foreach ($allResources as $key => $descriptorClass) {
 

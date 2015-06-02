@@ -18,7 +18,7 @@ class ResourceTranslation extends Model {
 	 */
 	public function __construct(array $attributes = []) {
 
-		$prefix = Config::get('resources::config.tablePrefix', '');
+		$prefix = Config::get('resources.tablePrefix', '');
 
 		$this->setTable($prefix . 'resource_translations');
 
