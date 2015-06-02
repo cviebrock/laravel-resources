@@ -1,5 +1,6 @@
 # laravel-resources
 
+> Note: The `0.x` branch and `~0.9` releases are for Laravel 4.  Use `master` or `>=1.0` for Laravel 5.
 
 
 ## Installation
