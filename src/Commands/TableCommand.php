@@ -72,7 +72,7 @@ class TableCommand extends Command {
 
 		return str_replace(
 			'%PREFIX%',
-			Config::get('resources::config.tablePrefix', ''),
+			Config::get('resources.tablePrefix', ''),
 			$data
 		);
 	}

@@ -110,7 +110,7 @@ class ResourceGroup implements ArrayableInterface, ArrayAccess, Countable, Itera
 	public function getResourceMap() {
 
 		if (!($this->resourceMap)) {
-			$this->resourceMap = array_dot(Config::get('resources::resources'));
+			$this->resourceMap = array_dot(Config::get('resources.resources'));
 		}
 
 		return $this->resourceMap;

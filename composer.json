@@ -9,10 +9,10 @@
 	],
 	"require": {
 		"php": ">=5.4",
-		"illuminate/redis": "~4.2",
-		"illuminate/console": "~4.2",
-		"illuminate/database": "~4.2",
-		"illuminate/support": "~4.2"
+		"illuminate/redis": "~5",
+		"illuminate/console": "~5",
+		"illuminate/database": "~5",
+		"illuminate/support": "~5"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0"
